@@ -518,6 +518,14 @@
                 <input type="range" id="density" min="0" max="100" value="45" step="1">
             </div>
 
+            <div class="control-group" id="variationControl" style="display: none;">
+                <label>
+                    Variation
+                    <span class="value-display" id="variationValue">100%</span>
+                </label>
+                <input type="range" id="variation" min="0" max="100" value="100" step="1">
+            </div>
+
             <div class="control-group">
                 <label>
                     Seed
@@ -671,6 +679,7 @@
                     this.patternMode = 'dots';
                     toggleDots.classList.add('active');
                     toggleBars.classList.remove('active');
+                    document.getElementById('variationControl').style.display = 'none';
                     this.updateLabels();
                     this.generate();
                 });
@@ -679,6 +688,7 @@
                     this.patternMode = 'bars';
                     toggleBars.classList.add('active');
                     toggleDots.classList.remove('active');
+                    document.getElementById('variationControl').style.display = 'block';
                     this.updateLabels();
                     this.generate();
                 });
@@ -696,6 +706,13 @@
 
                 seed.addEventListener('input', (e) => {
                     document.getElementById('seedValue').textContent = e.target.value;
+                    this.generate();
+                });
+
+                // Variation control for bars
+                const variation = document.getElementById('variation');
+                variation.addEventListener('input', (e) => {
+                    document.getElementById('variationValue').textContent = e.target.value + '%';
                     this.generate();
                 });
 
@@ -862,6 +879,7 @@
             generateBars() {
                 const barWidth = parseInt(document.getElementById('dotSize').value);
                 const density = parseInt(document.getElementById('density').value) / 100;
+                const variation = parseInt(document.getElementById('variation').value) / 100;
                 const seed = parseInt(document.getElementById('seed').value);
                 const foregroundColor = document.getElementById('foregroundColor').value;
                 const backgroundColor = document.getElementById('backgroundColor').value;
@@ -887,7 +905,7 @@
 
                     // Calculate grid dimensions to center the pattern
                     const cols = Math.floor(canvasWidth / spacing);
-                    const rows = Math.floor((canvasHeight / spacing) * 3); // More rows for varied bar lengths
+                    const rows = Math.floor((canvasHeight / spacing) * 3);
                     const gridWidth = cols * spacing;
                     const offsetX = (canvasWidth - gridWidth) / 2 + barWidth / 2;
 
@@ -904,8 +922,12 @@
 
                         while (currentY < canvasHeight) {
                             if (rng.next() < density) {
-                                // Generate random bar length (between 1 and 6 units)
-                                const lengthUnits = Math.floor(rng.next() * 5) + 1;
+                                // Calculate bar length based on variation
+                                // 0% variation = 1 unit (square/pill)
+                                // 100% variation = 1-6 units (full range)
+                                const minUnits = 1;
+                                const maxUnits = 1 + Math.floor(variation * 5);
+                                const lengthUnits = minUnits + Math.floor(rng.next() * (maxUnits - minUnits + 1));
                                 const barHeight = barWidth * lengthUnits;
 
                                 // Draw rounded rectangle
@@ -1023,6 +1045,7 @@
             downloadBarsSVG() {
                 const barWidth = parseInt(document.getElementById('dotSize').value);
                 const density = parseInt(document.getElementById('density').value) / 100;
+                const variation = parseInt(document.getElementById('variation').value) / 100;
                 const seed = parseInt(document.getElementById('seed').value);
                 const foregroundColor = document.getElementById('foregroundColor').value;
                 const backgroundColor = document.getElementById('backgroundColor').value;
@@ -1049,7 +1072,9 @@
 
                     while (currentY < canvasHeight) {
                         if (rng.next() < density) {
-                            const lengthUnits = Math.floor(rng.next() * 5) + 1;
+                            const minUnits = 1;
+                            const maxUnits = 1 + Math.floor(variation * 5);
+                            const lengthUnits = minUnits + Math.floor(rng.next() * (maxUnits - minUnits + 1));
                             const barHeight = barWidth * lengthUnits;
                             const rx = x - barWidth / 2;
                             const ry = currentY;
