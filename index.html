@@ -366,6 +366,14 @@
             </div>
 
             <div class="control-group">
+                <label>
+                    Seed
+                    <span class="value-display" id="seedValue">12345</span>
+                </label>
+                <input type="range" id="seed" min="1" max="999999" value="12345" step="1">
+            </div>
+
+            <div class="control-group">
                 <label>Dimensions</label>
                 <div class="dimension-inputs">
                     <div class="dimension-input-wrapper">
@@ -436,7 +444,6 @@
             constructor() {
                 this.canvas = document.getElementById('patternCanvas');
                 this.ctx = this.canvas.getContext('2d');
-                this.currentSeed = Math.floor(Math.random() * 1000000);
                 this.initializeControls();
                 this.generate();
             }
@@ -444,6 +451,7 @@
             initializeControls() {
                 const dotSize = document.getElementById('dotSize');
                 const density = document.getElementById('density');
+                const seed = document.getElementById('seed');
                 const canvasWidth = document.getElementById('canvasWidth');
                 const canvasHeight = document.getElementById('canvasHeight');
                 const foregroundColor = document.getElementById('foregroundColor');
@@ -460,6 +468,11 @@
                     this.generate();
                 });
 
+                seed.addEventListener('input', (e) => {
+                    document.getElementById('seedValue').textContent = e.target.value;
+                    this.generate();
+                });
+
                 canvasWidth.addEventListener('input', () => this.generate());
                 canvasHeight.addEventListener('input', () => this.generate());
                 foregroundColor.addEventListener('input', () => this.generate());
@@ -467,7 +480,9 @@
 
                 // Shuffle button - randomizes seed
                 document.getElementById('randomize').addEventListener('click', () => {
-                    this.currentSeed = Math.floor(Math.random() * 1000000);
+                    const randomSeed = Math.floor(Math.random() * 999999) + 1;
+                    seed.value = randomSeed;
+                    document.getElementById('seedValue').textContent = randomSeed;
                     this.generate();
                 });
 
@@ -479,7 +494,9 @@
                     // Space or R for new pattern
                     if ((e.code === 'Space' || e.key === 'r') && !e.target.matches('input')) {
                         e.preventDefault();
-                        this.currentSeed = Math.floor(Math.random() * 1000000);
+                        const randomSeed = Math.floor(Math.random() * 999999) + 1;
+                        seed.value = randomSeed;
+                        document.getElementById('seedValue').textContent = randomSeed;
                         this.generate();
                     }
                     // P for PNG download
@@ -498,6 +515,7 @@
             generate() {
                 const dotSize = parseInt(document.getElementById('dotSize').value);
                 const density = parseInt(document.getElementById('density').value) / 100;
+                const seed = parseInt(document.getElementById('seed').value);
                 const foregroundColor = document.getElementById('foregroundColor').value;
                 const backgroundColor = document.getElementById('backgroundColor').value;
                 const canvasWidth = parseInt(document.getElementById('canvasWidth').value);
@@ -521,7 +539,7 @@
                     const radius = dotSize / 2;
 
                     // Initialize seeded random number generator
-                    const rng = new SeededRandom(this.currentSeed);
+                    const rng = new SeededRandom(seed);
 
                     // Draw dots
                     let dotCount = 0;
@@ -557,9 +575,10 @@
             }
 
             downloadPNG() {
+                const seed = document.getElementById('seed').value;
                 const link = document.createElement('a');
                 const timestamp = new Date().toISOString().slice(0, 10);
-                link.download = `pattern-${timestamp}-${this.currentSeed}.png`;
+                link.download = `pattern-${timestamp}-${seed}.png`;
                 link.href = this.canvas.toDataURL('image/png');
                 link.click();
             }
@@ -567,6 +586,7 @@
             downloadSVG() {
                 const dotSize = parseInt(document.getElementById('dotSize').value);
                 const density = parseInt(document.getElementById('density').value) / 100;
+                const seed = parseInt(document.getElementById('seed').value);
                 const foregroundColor = document.getElementById('foregroundColor').value;
                 const backgroundColor = document.getElementById('backgroundColor').value;
                 const canvasWidth = parseInt(document.getElementById('canvasWidth').value);
@@ -574,7 +594,7 @@
 
                 const spacing = dotSize * 2;
                 const radius = dotSize / 2;
-                const rng = new SeededRandom(this.currentSeed);
+                const rng = new SeededRandom(seed);
 
                 let svg = `<?xml version="1.0" encoding="UTF-8"?>
 <svg width="${canvasWidth}" height="${canvasHeight}" xmlns="http://www.w3.org/2000/svg">
@@ -596,7 +616,7 @@
                 const url = URL.createObjectURL(blob);
                 const link = document.createElement('a');
                 const timestamp = new Date().toISOString().slice(0, 10);
-                link.download = `pattern-${timestamp}-${this.currentSeed}.svg`;
+                link.download = `pattern-${timestamp}-${seed}.svg`;
                 link.href = url;
                 link.click();
                 URL.revokeObjectURL(url);
