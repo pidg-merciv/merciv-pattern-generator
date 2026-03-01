@@ -368,9 +368,9 @@
             <div class="control-group">
                 <label>
                     Seed
-                    <span class="value-display" id="seedValue">12345</span>
+                    <span class="value-display" id="seedValue">12</span>
                 </label>
-                <input type="range" id="seed" min="1" max="999999" value="12345" step="1">
+                <input type="range" id="seed" min="1" max="100" value="12" step="1">
             </div>
 
             <div class="control-group">
@@ -480,7 +480,7 @@
 
                 // Shuffle button - randomizes seed
                 document.getElementById('randomize').addEventListener('click', () => {
-                    const randomSeed = Math.floor(Math.random() * 999999) + 1;
+                    const randomSeed = Math.floor(Math.random() * 100) + 1;
                     seed.value = randomSeed;
                     document.getElementById('seedValue').textContent = randomSeed;
                     this.generate();
@@ -494,7 +494,7 @@
                     // Space or R for new pattern
                     if ((e.code === 'Space' || e.key === 'r') && !e.target.matches('input')) {
                         e.preventDefault();
-                        const randomSeed = Math.floor(Math.random() * 999999) + 1;
+                        const randomSeed = Math.floor(Math.random() * 100) + 1;
                         seed.value = randomSeed;
                         document.getElementById('seedValue').textContent = randomSeed;
                         this.generate();
