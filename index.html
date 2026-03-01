@@ -444,7 +444,7 @@
 
         .toggle-group {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr 1fr 1fr;
             gap: 4px;
             background: #F2F2ED;
             padding: 4px;
@@ -499,6 +499,7 @@
                 <div class="toggle-group">
                     <button class="toggle-button active" id="toggleDots" data-mode="dots">Dots</button>
                     <button class="toggle-button" id="toggleBars" data-mode="bars">Bars</button>
+                    <button class="toggle-button" id="toggleMixed" data-mode="mixed">Mixed</button>
                 </div>
             </div>
 
@@ -518,12 +519,12 @@
                 <input type="range" id="density" min="0" max="100" value="45" step="1">
             </div>
 
-            <div class="control-group" id="variationControl" style="display: none;">
+            <div class="control-group" id="proportionControl" style="display: none;">
                 <label>
-                    Variation
-                    <span class="value-display" id="variationValue">100%</span>
+                    Dots proportion
+                    <span class="value-display" id="proportionValue">50%</span>
                 </label>
-                <input type="range" id="variation" min="0" max="100" value="100" step="1">
+                <input type="range" id="proportion" min="0" max="100" value="50" step="1">
             </div>
 
             <div class="control-group">
@@ -673,13 +674,15 @@
                 const backgroundColor = document.getElementById('backgroundColor');
                 const toggleDots = document.getElementById('toggleDots');
                 const toggleBars = document.getElementById('toggleBars');
+                const toggleMixed = document.getElementById('toggleMixed');
 
                 // Pattern mode toggle
                 toggleDots.addEventListener('click', () => {
                     this.patternMode = 'dots';
                     toggleDots.classList.add('active');
                     toggleBars.classList.remove('active');
-                    document.getElementById('variationControl').style.display = 'none';
+                    toggleMixed.classList.remove('active');
+                    document.getElementById('proportionControl').style.display = 'none';
                     this.updateLabels();
                     this.generate();
                 });
@@ -688,7 +691,18 @@
                     this.patternMode = 'bars';
                     toggleBars.classList.add('active');
                     toggleDots.classList.remove('active');
-                    document.getElementById('variationControl').style.display = 'block';
+                    toggleMixed.classList.remove('active');
+                    document.getElementById('proportionControl').style.display = 'none';
+                    this.updateLabels();
+                    this.generate();
+                });
+
+                toggleMixed.addEventListener('click', () => {
+                    this.patternMode = 'mixed';
+                    toggleMixed.classList.add('active');
+                    toggleDots.classList.remove('active');
+                    toggleBars.classList.remove('active');
+                    document.getElementById('proportionControl').style.display = 'block';
                     this.updateLabels();
                     this.generate();
                 });
@@ -709,10 +723,10 @@
                     this.generate();
                 });
 
-                // Variation control for bars
-                const variation = document.getElementById('variation');
-                variation.addEventListener('input', (e) => {
-                    document.getElementById('variationValue').textContent = e.target.value + '%';
+                // Proportion control for mixed mode
+                const proportion = document.getElementById('proportion');
+                proportion.addEventListener('input', (e) => {
+                    document.getElementById('proportionValue').textContent = e.target.value + '%';
                     this.generate();
                 });
 
@@ -789,18 +803,24 @@
                     document.getElementById('sizeLabel').textContent = 'Dot size';
                     document.getElementById('fgColorLabel').textContent = 'Dots';
                     document.getElementById('elementType').textContent = 'dots';
-                } else {
+                } else if (this.patternMode === 'bars') {
                     document.getElementById('sizeLabel').textContent = 'Bar width';
                     document.getElementById('fgColorLabel').textContent = 'Bars';
                     document.getElementById('elementType').textContent = 'bars';
+                } else {
+                    document.getElementById('sizeLabel').textContent = 'Element size';
+                    document.getElementById('fgColorLabel').textContent = 'Elements';
+                    document.getElementById('elementType').textContent = 'elements';
                 }
             }
 
             generate() {
                 if (this.patternMode === 'dots') {
                     this.generateDots();
-                } else {
+                } else if (this.patternMode === 'bars') {
                     this.generateBars();
+                } else {
+                    this.generateMixed();
                 }
             }
 
@@ -922,12 +942,8 @@
 
                         while (currentY < canvasHeight) {
                             if (rng.next() < density) {
-                                // Calculate bar length based on variation
-                                // 0% variation = 1 unit (square/pill)
-                                // 100% variation = 1-6 units (full range)
-                                const minUnits = 1;
-                                const maxUnits = 1 + Math.floor(variation * 5);
-                                const lengthUnits = minUnits + Math.floor(rng.next() * (maxUnits - minUnits + 1));
+                                // Bars are always 2-6 units tall (never square)
+                                const lengthUnits = 2 + Math.floor(rng.next() * 5);
                                 const barHeight = barWidth * lengthUnits;
 
                                 // Draw rounded rectangle
@@ -975,6 +991,95 @@
                 this.ctx.fill();
             }
 
+            generateMixed() {
+                const elementSize = parseInt(document.getElementById('dotSize').value);
+                const density = parseInt(document.getElementById('density').value) / 100;
+                const proportion = parseInt(document.getElementById('proportion').value) / 100;
+                const seed = parseInt(document.getElementById('seed').value);
+                const foregroundColor = document.getElementById('foregroundColor').value;
+                const backgroundColor = document.getElementById('backgroundColor').value;
+                const canvasWidth = parseInt(document.getElementById('canvasWidth').value);
+                const canvasHeight = parseInt(document.getElementById('canvasHeight').value);
+
+                // Add updating class for transition
+                this.canvas.classList.add('updating');
+
+                // Small delay for visual feedback
+                setTimeout(() => {
+                    // Set canvas to actual dimensions
+                    this.canvas.width = canvasWidth;
+                    this.canvas.height = canvasHeight;
+
+                    // Fill background
+                    this.ctx.fillStyle = backgroundColor;
+                    this.ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+                    // Calculate grid spacing
+                    const spacing = elementSize * 2;
+                    const radius = elementSize / 2;
+                    const cornerRadius = elementSize * 0.2125556105;
+
+                    // Calculate grid dimensions to center the pattern
+                    const cols = Math.floor(canvasWidth / spacing);
+                    const gridWidth = cols * spacing;
+                    const offsetX = (canvasWidth - gridWidth) / 2 + elementSize / 2;
+
+                    // Initialize seeded random number generator
+                    const rng = new SeededRandom(seed);
+
+                    // Draw mixed elements
+                    let elementCount = 0;
+                    this.ctx.fillStyle = foregroundColor;
+
+                    for (let col = 0; col < cols; col++) {
+                        const x = offsetX + col * spacing;
+                        let currentY = elementSize / 2;
+
+                        while (currentY < canvasHeight) {
+                            if (rng.next() < density) {
+                                // Determine if this should be a dot or bar based on proportion
+                                const isDot = rng.next() < proportion;
+                                
+                                if (isDot) {
+                                    // Draw dot (1 unit)
+                                    this.ctx.beginPath();
+                                    this.ctx.arc(x, currentY, radius, 0, Math.PI * 2);
+                                    this.ctx.fill();
+                                    currentY += elementSize + elementSize;
+                                } else {
+                                    // Draw bar (2-6 units)
+                                    const lengthUnits = 2 + Math.floor(rng.next() * 5);
+                                    const barHeight = elementSize * lengthUnits;
+                                    this.drawRoundedRect(x - elementSize / 2, currentY, elementSize, barHeight, cornerRadius);
+                                    currentY += barHeight + elementSize;
+                                }
+                                
+                                elementCount++;
+                            } else {
+                                // Skip one unit when density check fails
+                                currentY += elementSize * 2;
+                            }
+                        }
+                    }
+
+                    // Scale canvas display to fit container width
+                    const wrapper = this.canvas.parentElement;
+                    const maxWidth = wrapper.clientWidth;
+                    
+                    if (canvasWidth > maxWidth) {
+                        const scale = maxWidth / canvasWidth;
+                        this.canvas.style.width = maxWidth + 'px';
+                        this.canvas.style.height = (canvasHeight * scale) + 'px';
+                    } else {
+                        this.canvas.style.width = canvasWidth + 'px';
+                        this.canvas.style.height = canvasHeight + 'px';
+                    }
+
+                    document.getElementById('dotCount').textContent = elementCount.toLocaleString();
+                    this.canvas.classList.remove('updating');
+                }, 50);
+            }
+
             downloadPNG() {
                 const seed = document.getElementById('seed').value;
                 const link = document.createElement('a');
@@ -987,8 +1092,10 @@
             downloadSVG() {
                 if (this.patternMode === 'dots') {
                     this.downloadDotsSVG();
-                } else {
+                } else if (this.patternMode === 'bars') {
                     this.downloadBarsSVG();
+                } else {
+                    this.downloadMixedSVG();
                 }
             }
 
@@ -1045,7 +1152,6 @@
             downloadBarsSVG() {
                 const barWidth = parseInt(document.getElementById('dotSize').value);
                 const density = parseInt(document.getElementById('density').value) / 100;
-                const variation = parseInt(document.getElementById('variation').value) / 100;
                 const seed = parseInt(document.getElementById('seed').value);
                 const foregroundColor = document.getElementById('foregroundColor').value;
                 const backgroundColor = document.getElementById('backgroundColor').value;
@@ -1072,9 +1178,8 @@
 
                     while (currentY < canvasHeight) {
                         if (rng.next() < density) {
-                            const minUnits = 1;
-                            const maxUnits = 1 + Math.floor(variation * 5);
-                            const lengthUnits = minUnits + Math.floor(rng.next() * (maxUnits - minUnits + 1));
+                            // Bars are always 2-6 units tall (never square)
+                            const lengthUnits = 2 + Math.floor(rng.next() * 5);
                             const barHeight = barWidth * lengthUnits;
                             const rx = x - barWidth / 2;
                             const ry = currentY;
@@ -1084,6 +1189,71 @@
                             currentY += barHeight + barWidth;
                         } else {
                             currentY += barWidth * 2;
+                        }
+                    }
+                }
+
+                svg += `\n    </g>
+</svg>`;
+
+                const blob = new Blob([svg], { type: 'image/svg+xml' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                const timestamp = new Date().toISOString().slice(0, 10);
+                link.download = `pattern-${timestamp}-${seed}.svg`;
+                link.href = url;
+                link.click();
+                URL.revokeObjectURL(url);
+            }
+
+            downloadMixedSVG() {
+                const elementSize = parseInt(document.getElementById('dotSize').value);
+                const density = parseInt(document.getElementById('density').value) / 100;
+                const proportion = parseInt(document.getElementById('proportion').value) / 100;
+                const seed = parseInt(document.getElementById('seed').value);
+                const foregroundColor = document.getElementById('foregroundColor').value;
+                const backgroundColor = document.getElementById('backgroundColor').value;
+                const canvasWidth = parseInt(document.getElementById('canvasWidth').value);
+                const canvasHeight = parseInt(document.getElementById('canvasHeight').value);
+
+                const spacing = elementSize * 2;
+                const radius = elementSize / 2;
+                const cornerRadius = elementSize * 0.2125556105;
+
+                const cols = Math.floor(canvasWidth / spacing);
+                const gridWidth = cols * spacing;
+                const offsetX = (canvasWidth - gridWidth) / 2 + elementSize / 2;
+
+                const rng = new SeededRandom(seed);
+
+                let svg = `<?xml version="1.0" encoding="UTF-8"?>
+<svg width="${canvasWidth}" height="${canvasHeight}" xmlns="http://www.w3.org/2000/svg">
+    <rect width="${canvasWidth}" height="${canvasHeight}" fill="${backgroundColor}"/>
+    <g fill="${foregroundColor}">`;
+
+                for (let col = 0; col < cols; col++) {
+                    const x = offsetX + col * spacing;
+                    let currentY = elementSize / 2;
+
+                    while (currentY < canvasHeight) {
+                        if (rng.next() < density) {
+                            const isDot = rng.next() < proportion;
+                            
+                            if (isDot) {
+                                // Draw dot
+                                svg += `\n        <circle cx="${x}" cy="${currentY}" r="${radius}"/>`;
+                                currentY += elementSize + elementSize;
+                            } else {
+                                // Draw bar (2-6 units)
+                                const lengthUnits = 2 + Math.floor(rng.next() * 5);
+                                const barHeight = elementSize * lengthUnits;
+                                const rx = x - elementSize / 2;
+                                const ry = currentY;
+                                svg += `\n        <rect x="${rx}" y="${ry}" width="${elementSize}" height="${barHeight}" rx="${cornerRadius}" ry="${cornerRadius}"/>`;
+                                currentY += barHeight + elementSize;
+                            }
+                        } else {
+                            currentY += elementSize * 2;
                         }
                     }
                 }
