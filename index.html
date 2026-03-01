@@ -444,7 +444,7 @@
 
         .toggle-group {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
             gap: 4px;
             background: #F2F2ED;
             padding: 4px;
@@ -500,6 +500,7 @@
                     <button class="toggle-button active" id="toggleDots" data-mode="dots">Dots</button>
                     <button class="toggle-button" id="toggleBars" data-mode="bars">Bars</button>
                     <button class="toggle-button" id="toggleMixed" data-mode="mixed">Mixed</button>
+                    <button class="toggle-button" id="toggleWoven" data-mode="woven">Woven</button>
                 </div>
             </div>
 
@@ -675,6 +676,7 @@
                 const toggleDots = document.getElementById('toggleDots');
                 const toggleBars = document.getElementById('toggleBars');
                 const toggleMixed = document.getElementById('toggleMixed');
+                const toggleWoven = document.getElementById('toggleWoven');
 
                 // Pattern mode toggle
                 toggleDots.addEventListener('click', () => {
@@ -682,6 +684,7 @@
                     toggleDots.classList.add('active');
                     toggleBars.classList.remove('active');
                     toggleMixed.classList.remove('active');
+                    toggleWoven.classList.remove('active');
                     document.getElementById('proportionControl').style.display = 'none';
                     this.updateLabels();
                     this.generate();
@@ -692,6 +695,7 @@
                     toggleBars.classList.add('active');
                     toggleDots.classList.remove('active');
                     toggleMixed.classList.remove('active');
+                    toggleWoven.classList.remove('active');
                     document.getElementById('proportionControl').style.display = 'none';
                     this.updateLabels();
                     this.generate();
@@ -702,7 +706,19 @@
                     toggleMixed.classList.add('active');
                     toggleDots.classList.remove('active');
                     toggleBars.classList.remove('active');
+                    toggleWoven.classList.remove('active');
                     document.getElementById('proportionControl').style.display = 'block';
+                    this.updateLabels();
+                    this.generate();
+                });
+
+                toggleWoven.addEventListener('click', () => {
+                    this.patternMode = 'woven';
+                    toggleWoven.classList.add('active');
+                    toggleDots.classList.remove('active');
+                    toggleBars.classList.remove('active');
+                    toggleMixed.classList.remove('active');
+                    document.getElementById('proportionControl').style.display = 'none';
                     this.updateLabels();
                     this.generate();
                 });
@@ -807,9 +823,13 @@
                     document.getElementById('sizeLabel').textContent = 'Bar width';
                     document.getElementById('fgColorLabel').textContent = 'Bars';
                     document.getElementById('elementType').textContent = 'bars';
-                } else {
+                } else if (this.patternMode === 'mixed') {
                     document.getElementById('sizeLabel').textContent = 'Element size';
                     document.getElementById('fgColorLabel').textContent = 'Elements';
+                    document.getElementById('elementType').textContent = 'elements';
+                } else {
+                    document.getElementById('sizeLabel').textContent = 'Unit size';
+                    document.getElementById('fgColorLabel').textContent = 'Pattern';
                     document.getElementById('elementType').textContent = 'elements';
                 }
             }
@@ -819,8 +839,10 @@
                     this.generateDots();
                 } else if (this.patternMode === 'bars') {
                     this.generateBars();
-                } else {
+                } else if (this.patternMode === 'mixed') {
                     this.generateMixed();
+                } else {
+                    this.generateWoven();
                 }
             }
 
@@ -1079,6 +1101,97 @@
                 }, 50);
             }
 
+            generateWoven() {
+                const unitSize = parseInt(document.getElementById('dotSize').value);
+                const density = parseInt(document.getElementById('density').value) / 100;
+                const seed = parseInt(document.getElementById('seed').value);
+                const foregroundColor = document.getElementById('foregroundColor').value;
+                const backgroundColor = document.getElementById('backgroundColor').value;
+                const canvasWidth = parseInt(document.getElementById('canvasWidth').value);
+                const canvasHeight = parseInt(document.getElementById('canvasHeight').value);
+
+                // Add updating class for transition
+                this.canvas.classList.add('updating');
+
+                setTimeout(() => {
+                    this.canvas.width = canvasWidth;
+                    this.canvas.height = canvasHeight;
+
+                    // Fill background
+                    this.ctx.fillStyle = backgroundColor;
+                    this.ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+                    const spacing = unitSize * 2;
+                    const radius = unitSize / 2;
+                    const cornerRadius = unitSize * 0.2125556105;
+
+                    // Calculate grid
+                    const cols = Math.floor(canvasWidth / spacing);
+                    const rows = Math.floor(canvasHeight / spacing);
+                    const gridWidth = cols * spacing;
+                    const offsetX = (canvasWidth - gridWidth) / 2 + unitSize / 2;
+
+                    const rng = new SeededRandom(seed);
+                    this.ctx.fillStyle = foregroundColor;
+
+                    let elementCount = 0;
+
+                    // Create woven pattern: alternating horizontal dot rows and vertical bar columns
+                    // Pattern repeats every 6 rows for complexity
+                    for (let row = 0; row < rows * 3; row++) {
+                        const y = unitSize / 2 + row * spacing;
+                        if (y > canvasHeight) break;
+
+                        const rowPattern = row % 6;
+                        
+                        for (let col = 0; col < cols; col++) {
+                            const x = offsetX + col * spacing;
+                            const colPattern = col % 6;
+
+                            // Woven logic: alternating bands
+                            // Rows 0, 2, 4 are dot rows (but interrupted by bar columns)
+                            // Rows 1, 3, 5 are bar continuation rows
+                            const isDotRow = rowPattern % 2 === 0;
+                            const isBarColumn = colPattern % 3 === 0;
+
+                            if (rng.next() < density) {
+                                if (isDotRow && !isBarColumn) {
+                                    // Draw dot
+                                    this.ctx.beginPath();
+                                    this.ctx.arc(x, y, radius, 0, Math.PI * 2);
+                                    this.ctx.fill();
+                                    elementCount++;
+                                } else if (isBarColumn && rowPattern % 3 === 0) {
+                                    // Draw bar (2-4 units for woven pattern)
+                                    const barLengthUnits = 2 + Math.floor(rng.next() * 3);
+                                    const barHeight = unitSize * barLengthUnits;
+                                    if (y + barHeight <= canvasHeight + unitSize) {
+                                        this.drawRoundedRect(x - unitSize / 2, y, unitSize, barHeight, cornerRadius);
+                                        elementCount++;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Scale canvas display
+                    const wrapper = this.canvas.parentElement;
+                    const maxWidth = wrapper.clientWidth;
+                    
+                    if (canvasWidth > maxWidth) {
+                        const scale = maxWidth / canvasWidth;
+                        this.canvas.style.width = maxWidth + 'px';
+                        this.canvas.style.height = (canvasHeight * scale) + 'px';
+                    } else {
+                        this.canvas.style.width = canvasWidth + 'px';
+                        this.canvas.style.height = canvasHeight + 'px';
+                    }
+
+                    document.getElementById('dotCount').textContent = elementCount.toLocaleString();
+                    this.canvas.classList.remove('updating');
+                }, 50);
+            }
+
             downloadPNG() {
                 const seed = document.getElementById('seed').value;
                 const link = document.createElement('a');
@@ -1093,8 +1206,10 @@
                     this.downloadDotsSVG();
                 } else if (this.patternMode === 'bars') {
                     this.downloadBarsSVG();
-                } else {
+                } else if (this.patternMode === 'mixed') {
                     this.downloadMixedSVG();
+                } else {
+                    this.downloadWovenSVG();
                 }
             }
 
@@ -1253,6 +1368,72 @@
                             }
                         } else {
                             currentY += elementSize * 2;
+                        }
+                    }
+                }
+
+                svg += `\n    </g>
+</svg>`;
+
+                const blob = new Blob([svg], { type: 'image/svg+xml' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                const timestamp = new Date().toISOString().slice(0, 10);
+                link.download = `pattern-${timestamp}-${seed}.svg`;
+                link.href = url;
+                link.click();
+                URL.revokeObjectURL(url);
+            }
+
+            downloadWovenSVG() {
+                const unitSize = parseInt(document.getElementById('dotSize').value);
+                const density = parseInt(document.getElementById('density').value) / 100;
+                const seed = parseInt(document.getElementById('seed').value);
+                const foregroundColor = document.getElementById('foregroundColor').value;
+                const backgroundColor = document.getElementById('backgroundColor').value;
+                const canvasWidth = parseInt(document.getElementById('canvasWidth').value);
+                const canvasHeight = parseInt(document.getElementById('canvasHeight').value);
+
+                const spacing = unitSize * 2;
+                const radius = unitSize / 2;
+                const cornerRadius = unitSize * 0.2125556105;
+
+                const cols = Math.floor(canvasWidth / spacing);
+                const rows = Math.floor(canvasHeight / spacing);
+                const gridWidth = cols * spacing;
+                const offsetX = (canvasWidth - gridWidth) / 2 + unitSize / 2;
+
+                const rng = new SeededRandom(seed);
+
+                let svg = `<?xml version="1.0" encoding="UTF-8"?>
+<svg width="${canvasWidth}" height="${canvasHeight}" xmlns="http://www.w3.org/2000/svg">
+    <rect width="${canvasWidth}" height="${canvasHeight}" fill="${backgroundColor}"/>
+    <g fill="${foregroundColor}">`;
+
+                for (let row = 0; row < rows * 3; row++) {
+                    const y = unitSize / 2 + row * spacing;
+                    if (y > canvasHeight) break;
+
+                    const rowPattern = row % 6;
+                    
+                    for (let col = 0; col < cols; col++) {
+                        const x = offsetX + col * spacing;
+                        const colPattern = col % 6;
+
+                        const isDotRow = rowPattern % 2 === 0;
+                        const isBarColumn = colPattern % 3 === 0;
+
+                        if (rng.next() < density) {
+                            if (isDotRow && !isBarColumn) {
+                                svg += `\n        <circle cx="${x}" cy="${y}" r="${radius}"/>`;
+                            } else if (isBarColumn && rowPattern % 3 === 0) {
+                                const barLengthUnits = 2 + Math.floor(rng.next() * 3);
+                                const barHeight = unitSize * barLengthUnits;
+                                if (y + barHeight <= canvasHeight + unitSize) {
+                                    const rx = x - unitSize / 2;
+                                    svg += `\n        <rect x="${rx}" y="${y}" width="${unitSize}" height="${barHeight}" rx="${cornerRadius}" ry="${cornerRadius}"/>`;
+                                }
+                            }
                         }
                     }
                 }
