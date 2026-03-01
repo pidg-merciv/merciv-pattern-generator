@@ -13,102 +13,154 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f5f5f5;
-            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8eef5 100%);
+            min-height: 100vh;
+            padding: 32px 20px;
         }
 
         .container {
             max-width: 1400px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: 350px 1fr;
-            gap: 20px;
+            grid-template-columns: 320px 1fr;
+            gap: 32px;
+            align-items: start;
         }
 
         .controls {
             background: white;
-            border-radius: 12px;
-            padding: 24px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.05);
             height: fit-content;
             position: sticky;
-            top: 20px;
+            top: 32px;
+            border: 1px solid rgba(0,0,0,0.04);
         }
 
         h1 {
-            font-size: 24px;
-            margin-bottom: 24px;
-            color: #333;
+            font-size: 20px;
+            margin-bottom: 28px;
+            color: #1a1a1a;
+            font-weight: 700;
+            letter-spacing: -0.02em;
         }
 
         .control-group {
+            margin-bottom: 28px;
+        }
+
+        .control-group:last-of-type {
             margin-bottom: 24px;
         }
 
         label {
             display: block;
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 600;
-            color: #555;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            color: #374151;
+            margin-bottom: 10px;
+            letter-spacing: -0.01em;
+        }
+
+        .label-hint {
+            font-size: 12px;
+            color: #9ca3af;
+            font-weight: 400;
+            margin-left: 6px;
         }
 
         input[type="range"] {
             width: 100%;
-            height: 6px;
-            border-radius: 3px;
-            background: #e0e0e0;
+            height: 4px;
+            border-radius: 2px;
+            background: linear-gradient(to right, #639097 0%, #639097 var(--value-percent), #e5e7eb var(--value-percent), #e5e7eb 100%);
             outline: none;
             -webkit-appearance: none;
+            transition: background 0.15s ease;
         }
 
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
-            width: 18px;
-            height: 18px;
+            width: 20px;
+            height: 20px;
             border-radius: 50%;
-            background: #639097;
+            background: white;
             cursor: pointer;
+            border: 3px solid #639097;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+            transition: all 0.15s ease;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 8px rgba(99,144,151,0.3), 0 2px 4px rgba(0,0,0,0.1);
         }
 
         input[type="range"]::-moz-range-thumb {
-            width: 18px;
-            height: 18px;
+            width: 20px;
+            height: 20px;
             border-radius: 50%;
-            background: #639097;
+            background: white;
             cursor: pointer;
-            border: none;
+            border: 3px solid #639097;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+            transition: all 0.15s ease;
         }
 
-        input[type="number"], input[type="color"], input[type="text"] {
+        input[type="range"]::-moz-range-thumb:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 8px rgba(99,144,151,0.3), 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        input[type="number"] {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
+            padding: 10px 12px;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 8px;
             font-size: 14px;
             font-family: inherit;
+            transition: all 0.15s ease;
+            background: #fafbfc;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #639097;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(99,144,151,0.1);
         }
 
         input[type="color"] {
-            height: 45px;
+            width: 100%;
+            height: 42px;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 8px;
             cursor: pointer;
+            transition: all 0.15s ease;
+            padding: 4px;
+            background: #fafbfc;
+        }
+
+        input[type="color"]:hover {
+            border-color: #639097;
         }
 
         .value-display {
             display: inline-block;
             float: right;
-            font-size: 13px;
-            color: #888;
-            font-weight: normal;
+            font-size: 14px;
+            color: #6b7280;
+            font-weight: 500;
+            font-feature-settings: 'tnum';
+            letter-spacing: -0.01em;
         }
 
         .color-input-group {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
+            gap: 10px;
         }
 
         .color-input-wrapper {
@@ -116,114 +168,209 @@
             flex-direction: column;
         }
 
+        .color-label {
+            font-size: 12px;
+            font-weight: 500;
+            color: #6b7280;
+            margin-bottom: 6px;
+            letter-spacing: -0.01em;
+        }
+
         button {
             width: 100%;
-            padding: 12px;
-            background: #639097;
-            color: white;
+            padding: 12px 16px;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
-            transition: background 0.2s;
-            margin-top: 8px;
+            transition: all 0.2s ease;
+            letter-spacing: -0.01em;
         }
 
-        button:hover {
+        .btn-primary {
+            background: #639097;
+            color: white;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .btn-primary:hover {
             background: #527980;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(99,144,151,0.3);
         }
 
-        button:active {
-            transform: scale(0.98);
+        .btn-primary:active {
+            transform: translateY(0);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #374151;
+            border: 1.5px solid #e5e7eb;
+        }
+
+        .btn-secondary:hover {
+            background: #f9fafb;
+            border-color: #639097;
+            color: #639097;
+        }
+
+        .btn-secondary:active {
+            background: #f3f4f6;
         }
 
         .canvas-container {
             background: white;
-            border-radius: 12px;
-            padding: 24px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 8px 24px rgba(0,0,0,0.08);
             display: flex;
             flex-direction: column;
             align-items: center;
+            border: 1px solid rgba(0,0,0,0.04);
+            position: relative;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .canvas-wrapper {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
         }
 
         canvas {
-            border-radius: 8px;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+            display: block;
             max-width: 100%;
             height: auto;
+            transition: opacity 0.2s ease;
+        }
+
+        .canvas.updating {
+            opacity: 0.7;
         }
 
         .canvas-info {
-            margin-top: 16px;
+            margin-top: 24px;
             font-size: 13px;
-            color: #888;
+            color: #9ca3af;
+            font-weight: 500;
+            letter-spacing: -0.01em;
         }
 
         .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .export-section {
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid #f3f4f6;
+        }
+
+        .export-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #6b7280;
+            margin-bottom: 10px;
+            letter-spacing: -0.01em;
+        }
+
+        .export-buttons {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 8px;
-            margin-top: 12px;
+        }
+
+        .divider {
+            height: 1px;
+            background: #f3f4f6;
+            margin: 28px 0;
+        }
+
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+
+            .controls {
+                position: relative;
+                top: 0;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="controls">
-            <h1>Pattern Controls</h1>
+            <h1>Pattern Generator</h1>
             
             <div class="control-group">
                 <label>
-                    Dot Size (px)
-                    <span class="value-display" id="sizeValue">8</span>
+                    Dot size
+                    <span class="value-display" id="sizeValue">8px</span>
                 </label>
                 <input type="range" id="dotSize" min="2" max="30" value="8" step="1">
             </div>
 
             <div class="control-group">
                 <label>
-                    Density (%)
-                    <span class="value-display" id="densityValue">45</span>
+                    Density
+                    <span class="value-display" id="densityValue">45%</span>
                 </label>
                 <input type="range" id="density" min="0" max="100" value="45" step="1">
             </div>
 
             <div class="control-group">
-                <label>Random Seed</label>
-                <input type="number" id="seed" value="12345" step="1">
-                <button id="randomizeSeed">Randomize Seed</button>
+                <label>
+                    Canvas size
+                    <span class="value-display" id="canvasSizeValue">800px</span>
+                </label>
+                <input type="range" id="canvasSize" min="200" max="2400" value="800" step="100">
             </div>
+
+            <div class="divider"></div>
 
             <div class="control-group">
                 <label>Colors</label>
                 <div class="color-input-group">
                     <div class="color-input-wrapper">
-                        <label style="font-size: 11px; margin-bottom: 4px;">Foreground</label>
+                        <span class="color-label">Dots</span>
                         <input type="color" id="foregroundColor" value="#639097">
                     </div>
                     <div class="color-input-wrapper">
-                        <label style="font-size: 11px; margin-bottom: 4px;">Background</label>
+                        <span class="color-label">Background</span>
                         <input type="color" id="backgroundColor" value="#3E6166">
                     </div>
                 </div>
             </div>
 
-            <div class="control-group">
-                <label>Canvas Size (px)</label>
-                <input type="number" id="canvasSize" value="800" min="200" max="2400" step="100">
-            </div>
+            <div class="divider"></div>
 
             <div class="button-group">
-                <button id="regenerate">Regenerate</button>
-                <button id="downloadPNG">Download PNG</button>
+                <button class="btn-primary" id="randomize">✨ New Pattern</button>
+                <button class="btn-secondary" id="copySettings">Copy Settings</button>
             </div>
-            <button id="downloadSVG">Download SVG</button>
+
+            <div class="export-section">
+                <div class="export-label">Export pattern</div>
+                <div class="export-buttons">
+                    <button class="btn-secondary" id="downloadPNG">PNG</button>
+                    <button class="btn-secondary" id="downloadSVG">SVG</button>
+                </div>
+            </div>
         </div>
 
         <div class="canvas-container">
-            <canvas id="patternCanvas"></canvas>
+            <div class="canvas-wrapper">
+                <canvas id="patternCanvas"></canvas>
+            </div>
             <div class="canvas-info">
                 <span id="dotCount">0</span> dots rendered
             </div>
@@ -246,6 +393,7 @@
             constructor() {
                 this.canvas = document.getElementById('patternCanvas');
                 this.ctx = this.canvas.getContext('2d');
+                this.currentSeed = Math.floor(Math.random() * 1000000);
                 this.initializeControls();
                 this.generate();
             }
@@ -253,82 +401,131 @@
             initializeControls() {
                 const dotSize = document.getElementById('dotSize');
                 const density = document.getElementById('density');
-                const seed = document.getElementById('seed');
+                const canvasSize = document.getElementById('canvasSize');
                 const foregroundColor = document.getElementById('foregroundColor');
                 const backgroundColor = document.getElementById('backgroundColor');
-                const canvasSize = document.getElementById('canvasSize');
 
+                // Update value displays with units
                 dotSize.addEventListener('input', (e) => {
-                    document.getElementById('sizeValue').textContent = e.target.value;
+                    document.getElementById('sizeValue').textContent = e.target.value + 'px';
                     this.generate();
                 });
 
                 density.addEventListener('input', (e) => {
-                    document.getElementById('densityValue').textContent = e.target.value;
+                    document.getElementById('densityValue').textContent = e.target.value + '%';
                     this.generate();
                 });
 
-                seed.addEventListener('input', () => this.generate());
+                canvasSize.addEventListener('input', (e) => {
+                    document.getElementById('canvasSizeValue').textContent = e.target.value + 'px';
+                    this.generate();
+                });
+
                 foregroundColor.addEventListener('input', () => this.generate());
                 backgroundColor.addEventListener('input', () => this.generate());
-                canvasSize.addEventListener('input', () => this.generate());
 
-                document.getElementById('randomizeSeed').addEventListener('click', () => {
-                    seed.value = Math.floor(Math.random() * 1000000);
+                // New Pattern button - randomizes seed
+                document.getElementById('randomize').addEventListener('click', () => {
+                    this.currentSeed = Math.floor(Math.random() * 1000000);
                     this.generate();
                 });
 
-                document.getElementById('regenerate').addEventListener('click', () => this.generate());
+                // Copy Settings button - copies current config to clipboard
+                document.getElementById('copySettings').addEventListener('click', () => {
+                    const settings = {
+                        dotSize: dotSize.value,
+                        density: density.value,
+                        canvasSize: canvasSize.value,
+                        foregroundColor: foregroundColor.value,
+                        backgroundColor: backgroundColor.value,
+                        seed: this.currentSeed
+                    };
+                    navigator.clipboard.writeText(JSON.stringify(settings, null, 2));
+                    
+                    // Visual feedback
+                    const btn = document.getElementById('copySettings');
+                    const originalText = btn.textContent;
+                    btn.textContent = '✓ Copied!';
+                    setTimeout(() => {
+                        btn.textContent = originalText;
+                    }, 1500);
+                });
+
                 document.getElementById('downloadPNG').addEventListener('click', () => this.downloadPNG());
                 document.getElementById('downloadSVG').addEventListener('click', () => this.downloadSVG());
+
+                // Keyboard shortcuts
+                document.addEventListener('keydown', (e) => {
+                    // Space or R for new pattern
+                    if ((e.code === 'Space' || e.key === 'r') && !e.target.matches('input')) {
+                        e.preventDefault();
+                        this.currentSeed = Math.floor(Math.random() * 1000000);
+                        this.generate();
+                    }
+                    // P for PNG download
+                    if (e.key === 'p' && (e.metaKey || e.ctrlKey)) {
+                        e.preventDefault();
+                        this.downloadPNG();
+                    }
+                    // S for SVG download
+                    if (e.key === 's' && (e.metaKey || e.ctrlKey)) {
+                        e.preventDefault();
+                        this.downloadSVG();
+                    }
+                });
             }
 
             generate() {
                 const dotSize = parseInt(document.getElementById('dotSize').value);
                 const density = parseInt(document.getElementById('density').value) / 100;
-                const seed = parseInt(document.getElementById('seed').value);
                 const foregroundColor = document.getElementById('foregroundColor').value;
                 const backgroundColor = document.getElementById('backgroundColor').value;
                 const canvasSize = parseInt(document.getElementById('canvasSize').value);
 
-                // Set canvas size
-                this.canvas.width = canvasSize;
-                this.canvas.height = canvasSize;
+                // Add updating class for transition
+                this.canvas.classList.add('updating');
 
-                // Fill background
-                this.ctx.fillStyle = backgroundColor;
-                this.ctx.fillRect(0, 0, canvasSize, canvasSize);
+                // Small delay for visual feedback
+                setTimeout(() => {
+                    // Set canvas size
+                    this.canvas.width = canvasSize;
+                    this.canvas.height = canvasSize;
 
-                // Calculate grid spacing (dot size + space between = 2 * dotSize)
-                const spacing = dotSize * 2;
-                const radius = dotSize / 2;
+                    // Fill background
+                    this.ctx.fillStyle = backgroundColor;
+                    this.ctx.fillRect(0, 0, canvasSize, canvasSize);
 
-                // Initialize seeded random number generator
-                const rng = new SeededRandom(seed);
+                    // Calculate grid spacing
+                    const spacing = dotSize * 2;
+                    const radius = dotSize / 2;
 
-                // Draw dots
-                let dotCount = 0;
-                this.ctx.fillStyle = foregroundColor;
+                    // Initialize seeded random number generator
+                    const rng = new SeededRandom(this.currentSeed);
 
-                for (let y = radius; y < canvasSize; y += spacing) {
-                    for (let x = radius; x < canvasSize; x += spacing) {
-                        // Use density to determine if dot should be drawn
-                        if (rng.next() < density) {
-                            this.ctx.beginPath();
-                            this.ctx.arc(x, y, radius, 0, Math.PI * 2);
-                            this.ctx.fill();
-                            dotCount++;
+                    // Draw dots
+                    let dotCount = 0;
+                    this.ctx.fillStyle = foregroundColor;
+
+                    for (let y = radius; y < canvasSize; y += spacing) {
+                        for (let x = radius; x < canvasSize; x += spacing) {
+                            if (rng.next() < density) {
+                                this.ctx.beginPath();
+                                this.ctx.arc(x, y, radius, 0, Math.PI * 2);
+                                this.ctx.fill();
+                                dotCount++;
+                            }
                         }
                     }
-                }
 
-                document.getElementById('dotCount').textContent = dotCount;
+                    document.getElementById('dotCount').textContent = dotCount.toLocaleString();
+                    this.canvas.classList.remove('updating');
+                }, 50);
             }
 
             downloadPNG() {
                 const link = document.createElement('a');
-                const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
-                link.download = `pattern-${timestamp}.png`;
+                const timestamp = new Date().toISOString().slice(0, 10);
+                link.download = `pattern-${timestamp}-${this.currentSeed}.png`;
                 link.href = this.canvas.toDataURL('image/png');
                 link.click();
             }
@@ -336,14 +533,13 @@
             downloadSVG() {
                 const dotSize = parseInt(document.getElementById('dotSize').value);
                 const density = parseInt(document.getElementById('density').value) / 100;
-                const seed = parseInt(document.getElementById('seed').value);
                 const foregroundColor = document.getElementById('foregroundColor').value;
                 const backgroundColor = document.getElementById('backgroundColor').value;
                 const canvasSize = parseInt(document.getElementById('canvasSize').value);
 
                 const spacing = dotSize * 2;
                 const radius = dotSize / 2;
-                const rng = new SeededRandom(seed);
+                const rng = new SeededRandom(this.currentSeed);
 
                 let svg = `<?xml version="1.0" encoding="UTF-8"?>
 <svg width="${canvasSize}" height="${canvasSize}" xmlns="http://www.w3.org/2000/svg">
@@ -364,8 +560,8 @@
                 const blob = new Blob([svg], { type: 'image/svg+xml' });
                 const url = URL.createObjectURL(blob);
                 const link = document.createElement('a');
-                const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
-                link.download = `pattern-${timestamp}.svg`;
+                const timestamp = new Date().toISOString().slice(0, 10);
+                link.download = `pattern-${timestamp}-${this.currentSeed}.svg`;
                 link.href = url;
                 link.click();
                 URL.revokeObjectURL(url);
