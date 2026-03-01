@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Brand Pattern Generator</title>
     <style>
+        /* ─────────────────────────────────────────────────────────
+         * SPACING SCALE
+         * 4px, 8px, 12px, 16px, 24px, 32px
+         * ───────────────────────────────────────────────────────── */
+
         @font-face {
             font-family: 'GT Pressura';
             src: url('https://cdn.jsdelivr.net/gh/fonts/GT-Pressura@main/GT-Pressura-Regular.woff2') format('woff2');
@@ -56,7 +61,7 @@
         .controls {
             background: #FFFFFF;
             border-radius: 12px;
-            padding: 28px;
+            padding: 24px;
             box-shadow: 0 1px 3px rgba(13,13,12,0.04);
             height: fit-content;
             position: sticky;
@@ -67,7 +72,7 @@
         h1 {
             font-family: 'GT Pressura', 'Die Grotesk', sans-serif;
             font-size: 32px;
-            margin-bottom: 28px;
+            margin-bottom: 24px;
             color: #1A1917;
             font-weight: 400;
             letter-spacing: -0.02em;
@@ -75,28 +80,28 @@
         }
 
         .control-group {
-            margin-bottom: 28px;
-        }
-
-        .control-group:last-of-type {
             margin-bottom: 24px;
         }
 
         label {
-            display: block;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
             font-size: 14px;
             font-weight: 400;
             color: #4D4C48;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             letter-spacing: 0;
             line-height: 1.4;
         }
 
-        .label-hint {
-            font-size: 12px;
-            color: #99988F;
+        .value-display {
+            font-size: 14px;
+            color: #7F7E77;
             font-weight: 400;
-            margin-left: 6px;
+            font-feature-settings: 'tnum';
+            letter-spacing: 0;
+            line-height: 1.4;
         }
 
         input[type="range"] {
@@ -113,55 +118,63 @@
             width: 100%;
             height: 6px;
             border-radius: 3px;
-            background: #CCCBC4;
+            background: #E5E5DF;
         }
 
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             border-radius: 50%;
             background: #FFFFFF;
             cursor: pointer;
             border: 3px solid #ED4421;
-            box-shadow: 0 2px 4px rgba(13,13,12,0.1), 0 1px 2px rgba(13,13,12,0.06);
-            transition: all 0.15s ease;
-            margin-top: -7px;
+            box-shadow: 0 2px 4px rgba(13,13,12,0.1);
+            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            margin-top: -6px;
         }
 
         input[type="range"]::-webkit-slider-thumb:hover {
-            transform: scale(1.1);
-            box-shadow: 0 4px 8px rgba(237,68,33,0.3), 0 2px 4px rgba(13,13,12,0.1);
+            transform: scale(1.15);
+            box-shadow: 0 4px 8px rgba(237,68,33,0.2), 0 2px 4px rgba(13,13,12,0.1);
+        }
+
+        input[type="range"]::-webkit-slider-thumb:active {
+            transform: scale(1.05);
         }
 
         input[type="range"]::-moz-range-thumb {
-            width: 14px;
-            height: 14px;
+            width: 12px;
+            height: 12px;
             border-radius: 50%;
             background: #FFFFFF;
             cursor: pointer;
             border: 3px solid #ED4421;
-            box-shadow: 0 2px 4px rgba(13,13,12,0.1), 0 1px 2px rgba(13,13,12,0.06);
-            transition: all 0.15s ease;
+            box-shadow: 0 2px 4px rgba(13,13,12,0.1);
+            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         input[type="range"]::-moz-range-thumb:hover {
-            transform: scale(1.1);
-            box-shadow: 0 4px 8px rgba(237,68,33,0.3), 0 2px 4px rgba(13,13,12,0.1);
+            transform: scale(1.15);
+            box-shadow: 0 4px 8px rgba(237,68,33,0.2), 0 2px 4px rgba(13,13,12,0.1);
+        }
+
+        input[type="range"]::-moz-range-thumb:active {
+            transform: scale(1.05);
         }
 
         input[type="range"]::-moz-range-track {
             width: 100%;
             height: 6px;
             border-radius: 3px;
-            background: #CCCBC4;
+            background: #E5E5DF;
         }
 
         .dimension-inputs {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            gap: 8px;
         }
 
         .dimension-input-wrapper {
@@ -181,52 +194,52 @@
         input[type="number"] {
             width: 100%;
             padding: 10px 12px;
-            border: 1.5px solid #CCCBC4;
+            height: 40px;
+            border: 1.5px solid #E5E5DF;
             border-radius: 8px;
             font-size: 14px;
             font-family: inherit;
-            transition: all 0.15s ease;
+            transition: all 0.2s ease;
             background: #FAF9F5;
             color: #1A1917;
+        }
+
+        input[type="number"]:hover {
+            border-color: #CCCBC4;
         }
 
         input[type="number"]:focus {
             outline: none;
             border-color: #ED4421;
             background: #FFFFFF;
-            box-shadow: 0 0 0 3px rgba(237,68,33,0.1);
+            box-shadow: 0 0 0 3px rgba(237,68,33,0.08);
         }
 
         input[type="color"] {
             width: 100%;
-            height: 42px;
-            border: 1.5px solid #CCCBC4;
+            height: 40px;
+            border: 1.5px solid #E5E5DF;
             border-radius: 8px;
             cursor: pointer;
-            transition: all 0.15s ease;
+            transition: all 0.2s ease;
             padding: 4px;
             background: #FAF9F5;
         }
 
         input[type="color"]:hover {
-            border-color: #ED4421;
+            border-color: #CCCBC4;
         }
 
-        .value-display {
-            display: inline-block;
-            float: right;
-            font-size: 14px;
-            color: #7F7E77;
-            font-weight: 400;
-            font-feature-settings: 'tnum';
-            letter-spacing: 0;
-            line-height: 1.4;
+        input[type="color"]:focus {
+            outline: none;
+            border-color: #ED4421;
+            box-shadow: 0 0 0 3px rgba(237,68,33,0.08);
         }
 
         .color-input-group {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            gap: 8px;
         }
 
         .color-input-wrapper {
@@ -245,16 +258,17 @@
 
         button {
             width: 100%;
-            padding: 12px 20px;
+            padding: 11px 16px;
             border: none;
             border-radius: 8px;
             font-family: 'Die Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 400;
             cursor: pointer;
-            transition: background-color 0.15s ease, opacity 0.15s ease;
+            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
             letter-spacing: 0;
             line-height: 1.4;
+            position: relative;
         }
 
         .btn-primary {
@@ -264,10 +278,20 @@
 
         .btn-primary:hover {
             background: #FF5E3D;
+            transform: translateY(-1px);
         }
 
         .btn-primary:active {
-            opacity: 0.9;
+            transform: translateY(0);
+        }
+
+        .btn-primary .shortcut-hint {
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .btn-primary:hover .shortcut-hint {
+            opacity: 0.8;
         }
 
         .btn-secondary {
@@ -277,10 +301,26 @@
 
         .btn-secondary:hover {
             background: #CCCBC4;
+            transform: translateY(-1px);
         }
 
         .btn-secondary:active {
-            opacity: 0.9;
+            transform: translateY(0);
+        }
+
+        .btn-secondary .shortcut-hint {
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .btn-secondary:hover .shortcut-hint {
+            opacity: 0.7;
+        }
+
+        .shortcut-hint {
+            font-size: 12px;
+            margin-left: 8px;
+            font-weight: 400;
         }
 
         .canvas-container {
@@ -293,13 +333,14 @@
             align-items: center;
             border: 1px solid #E5E5DF;
             position: relative;
+            min-height: 400px;
         }
 
         .canvas-wrapper {
             position: relative;
             border-radius: 8px;
             overflow: hidden;
-            box-shadow: 0 1px 2px rgba(13,13,12,0.06);
+            box-shadow: 0 2px 8px rgba(13,13,12,0.06);
             width: 100%;
             display: flex;
             justify-content: center;
@@ -310,16 +351,16 @@
             display: block;
             max-width: 100%;
             height: auto;
-            transition: opacity 0.2s ease;
+            transition: opacity 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             transform-origin: center center;
         }
 
         .canvas.updating {
-            opacity: 0.7;
+            opacity: 0;
         }
 
         .canvas-info {
-            font-size: 14px;
+            font-size: 13px;
             color: #99988F;
             font-weight: 400;
             letter-spacing: 0;
@@ -330,21 +371,20 @@
         .button-group {
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            margin-top: 8px;
+            gap: 8px;
         }
 
         .export-section {
             margin-top: 24px;
             padding-top: 24px;
-            border-top: 1px solid #f3f4f6;
+            border-top: 1px solid #E5E5DF;
         }
 
         .export-label {
             font-size: 12px;
             font-weight: 400;
             color: #7F7E77;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             letter-spacing: 0;
             line-height: 1.4;
         }
@@ -358,28 +398,29 @@
         .divider {
             height: 1px;
             background: #E5E5DF;
-            margin: 28px 0;
+            margin: 24px 0;
         }
 
         .toggle-group {
-            display: flex;
-            background: #FAF9F5;
-            border: 1.5px solid #CCCBC4;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4px;
+            background: #F2F2ED;
+            padding: 4px;
             border-radius: 8px;
-            padding: 3px;
-            gap: 3px;
         }
 
         .toggle-button {
-            flex: 1;
-            padding: 8px 12px;
+            padding: 10px 16px;
             border: none;
             border-radius: 6px;
-            font-family: 'Die Grotesk', sans-serif;
+            font-family: 'Die Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
             font-size: 14px;
             font-weight: 400;
             cursor: pointer;
-            transition: all 0.15s ease;
+            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            letter-spacing: 0;
+            line-height: 1.4;
             background: transparent;
             color: #7F7E77;
         }
@@ -387,15 +428,16 @@
         .toggle-button.active {
             background: #FFFFFF;
             color: #1A1917;
-            box-shadow: 0 1px 2px rgba(13,13,12,0.1);
+            box-shadow: 0 1px 2px rgba(13,13,12,0.06);
+            transform: scale(1.02);
         }
 
         .toggle-button:hover:not(.active) {
-            color: #1A1917;
+            color: #4D4C48;
         }
 
         .color-presets {
-            margin-top: 16px;
+            margin-top: 12px;
         }
 
         .preset-label {
@@ -416,10 +458,10 @@
         .preset-button {
             width: 100%;
             height: 36px;
-            border: 1.5px solid #CCCBC4;
+            border: 1.5px solid #E5E5DF;
             border-radius: 6px;
             cursor: pointer;
-            transition: border-color 0.15s ease, opacity 0.15s ease;
+            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
             padding: 0;
             position: relative;
             overflow: hidden;
@@ -427,10 +469,17 @@
 
         .preset-button:hover {
             border-color: #ED4421;
+            transform: scale(1.05);
         }
 
         .preset-button:active {
-            opacity: 0.9;
+            transform: scale(0.98);
+        }
+
+        .preset-button.selected {
+            border-color: #ED4421;
+            border-width: 2px;
+            box-shadow: 0 0 0 2px rgba(237,68,33,0.1);
         }
 
         .preset-colors {
@@ -442,38 +491,58 @@
             flex: 1;
         }
 
-        .toggle-group {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4px;
-            background: #F2F2ED;
-            padding: 4px;
-            border-radius: 8px;
+        .loading-indicator {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
         }
 
-        .toggle-button {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 6px;
-            font-family: 'Die Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
-            font-size: 14px;
-            font-weight: 400;
-            cursor: pointer;
-            transition: background-color 0.15s ease, color 0.15s ease;
-            letter-spacing: 0;
-            line-height: 1.4;
-            background: transparent;
+        .loading-indicator.visible {
+            display: flex;
+        }
+
+        .spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid #E5E5DF;
+            border-top-color: #ED4421;
+            border-radius: 50%;
+            animation: spin 0.8s cubic-bezier(0.4, 0.0, 0.2, 1) infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 13px;
             color: #7F7E77;
         }
 
-        .toggle-button.active {
-            background: #FFFFFF;
-            color: #1A1917;
-            box-shadow: 0 1px 2px rgba(13,13,12,0.04);
+        .success-toast {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            background: #1A1917;
+            color: #FFFFFF;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            opacity: 0;
+            transform: translateY(20px);
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 4px 12px rgba(13,13,12,0.2);
         }
 
-        .toggle-button:hover:not(.active) {
-            color: #4D4C48;
+        .success-toast.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         @media (max-width: 1024px) {
@@ -485,6 +554,12 @@
             .controls {
                 position: relative;
                 top: 0;
+            }
+
+            .success-toast {
+                left: 20px;
+                right: 20px;
+                bottom: 20px;
             }
         }
     </style>
@@ -512,7 +587,7 @@
 
             <div class="control-group">
                 <label>
-                    Density
+                    <span>Density</span>
                     <span class="value-display" id="densityValue">45%</span>
                 </label>
                 <input type="range" id="density" min="0" max="100" value="45" step="1">
@@ -520,7 +595,7 @@
 
             <div class="control-group">
                 <label>
-                    Seed
+                    <span>Seed</span>
                     <span class="value-display" id="seedValue">12</span>
                 </label>
                 <input type="range" id="seed" min="1" max="100" value="12" step="1">
@@ -563,7 +638,7 @@
                                 <div class="preset-bg" style="background: #572330;"></div>
                             </div>
                         </button>
-                        <button class="preset-button" data-fg="#FF5E3D" data-bg="#ED4421" title="Orange 60 on 50">
+                        <button class="preset-button selected" data-fg="#FF5E3D" data-bg="#ED4421" title="Orange 60 on 50">
                             <div class="preset-colors">
                                 <div class="preset-fg" style="background: #FF5E3D;"></div>
                                 <div class="preset-bg" style="background: #ED4421;"></div>
@@ -612,19 +687,32 @@
             <div class="divider"></div>
 
             <div class="button-group">
-                <button class="btn-primary" id="randomize">Shuffle</button>
+                <button class="btn-primary" id="randomize">
+                    Shuffle
+                    <span class="shortcut-hint">Space / R</span>
+                </button>
             </div>
 
             <div class="export-section">
                 <div class="export-label">Export pattern</div>
                 <div class="export-buttons">
-                    <button class="btn-secondary" id="downloadPNG">PNG</button>
-                    <button class="btn-secondary" id="downloadSVG">SVG</button>
+                    <button class="btn-secondary" id="downloadPNG">
+                        PNG
+                        <span class="shortcut-hint">⌘P</span>
+                    </button>
+                    <button class="btn-secondary" id="downloadSVG">
+                        SVG
+                        <span class="shortcut-hint">⌘S</span>
+                    </button>
                 </div>
             </div>
         </div>
 
         <div class="canvas-container">
+            <div class="loading-indicator" id="loadingIndicator">
+                <div class="spinner"></div>
+                <div class="loading-text">Generating pattern...</div>
+            </div>
             <div class="canvas-wrapper">
                 <canvas id="patternCanvas"></canvas>
             </div>
@@ -634,7 +722,18 @@
         </div>
     </div>
 
+    <div class="success-toast" id="successToast"></div>
+
     <script>
+        /* ─────────────────────────────────────────────────────────
+         * ANIMATION CONFIG
+         * ───────────────────────────────────────────────────────── */
+        const TIMING = {
+            patternFade: 300,      // pattern fade in/out
+            toastDuration: 2000,   // success message duration
+            toastDelay: 200,       // delay before showing toast
+        };
+
         class SeededRandom {
             constructor(seed) {
                 this.seed = seed;
@@ -650,7 +749,8 @@
             constructor() {
                 this.canvas = document.getElementById('patternCanvas');
                 this.ctx = this.canvas.getContext('2d');
-                this.patternMode = 'dots'; // 'dots' or 'bars'
+                this.patternMode = 'dots';
+                this.currentPreset = null;
                 this.initializeControls();
                 this.generate();
             }
@@ -683,7 +783,7 @@
                     this.generate();
                 });
 
-                // Update value displays with units
+                // Update value displays
                 dotSize.addEventListener('input', (e) => {
                     document.getElementById('sizeValue').textContent = e.target.value + 'px';
                     this.generate();
@@ -701,8 +801,16 @@
 
                 canvasWidth.addEventListener('input', () => this.generate());
                 canvasHeight.addEventListener('input', () => this.generate());
-                foregroundColor.addEventListener('input', () => this.generate());
-                backgroundColor.addEventListener('input', () => this.generate());
+                foregroundColor.addEventListener('input', () => {
+                    this.currentPreset = null;
+                    this.updatePresetSelection();
+                    this.generate();
+                });
+                backgroundColor.addEventListener('input', () => {
+                    this.currentPreset = null;
+                    this.updatePresetSelection();
+                    this.generate();
+                });
 
                 // Color preset buttons
                 document.querySelectorAll('.preset-button').forEach(button => {
@@ -711,25 +819,15 @@
                         const bg = button.dataset.bg;
                         foregroundColor.value = fg;
                         backgroundColor.value = bg;
+                        this.currentPreset = `${fg}-${bg}`;
+                        this.updatePresetSelection();
                         this.generate();
                     });
                 });
 
-                // Shuffle button - randomizes dot size, density, and seed
+                // Shuffle button
                 document.getElementById('randomize').addEventListener('click', () => {
-                    const randomDotSize = Math.floor(Math.random() * 29) + 2; // 2-30
-                    const randomDensity = Math.floor(Math.random() * 101); // 0-100
-                    const randomSeed = Math.floor(Math.random() * 100) + 1; // 1-100
-                    
-                    dotSize.value = randomDotSize;
-                    density.value = randomDensity;
-                    seed.value = randomSeed;
-                    
-                    document.getElementById('sizeValue').textContent = randomDotSize + 'px';
-                    document.getElementById('densityValue').textContent = randomDensity + '%';
-                    document.getElementById('seedValue').textContent = randomSeed;
-                    
-                    this.generate();
+                    this.shuffle();
                 });
 
                 document.getElementById('downloadPNG').addEventListener('click', () => this.downloadPNG());
@@ -737,32 +835,48 @@
 
                 // Keyboard shortcuts
                 document.addEventListener('keydown', (e) => {
-                    // Space or R for shuffle (randomize all parameters)
                     if ((e.code === 'Space' || e.key === 'r') && !e.target.matches('input')) {
                         e.preventDefault();
-                        const randomDotSize = Math.floor(Math.random() * 29) + 2; // 2-30
-                        const randomDensity = Math.floor(Math.random() * 101); // 0-100
-                        const randomSeed = Math.floor(Math.random() * 100) + 1; // 1-100
-                        
-                        dotSize.value = randomDotSize;
-                        density.value = randomDensity;
-                        seed.value = randomSeed;
-                        
-                        document.getElementById('sizeValue').textContent = randomDotSize + 'px';
-                        document.getElementById('densityValue').textContent = randomDensity + '%';
-                        document.getElementById('seedValue').textContent = randomSeed;
-                        
-                        this.generate();
+                        this.shuffle();
                     }
-                    // P for PNG download
                     if (e.key === 'p' && (e.metaKey || e.ctrlKey)) {
                         e.preventDefault();
                         this.downloadPNG();
                     }
-                    // S for SVG download
                     if (e.key === 's' && (e.metaKey || e.ctrlKey)) {
                         e.preventDefault();
                         this.downloadSVG();
+                    }
+                });
+            }
+
+            shuffle() {
+                const dotSize = document.getElementById('dotSize');
+                const density = document.getElementById('density');
+                const seed = document.getElementById('seed');
+
+                const randomDotSize = Math.floor(Math.random() * 29) + 2;
+                const randomDensity = Math.floor(Math.random() * 101);
+                const randomSeed = Math.floor(Math.random() * 100) + 1;
+                
+                dotSize.value = randomDotSize;
+                density.value = randomDensity;
+                seed.value = randomSeed;
+                
+                document.getElementById('sizeValue').textContent = randomDotSize + 'px';
+                document.getElementById('densityValue').textContent = randomDensity + '%';
+                document.getElementById('seedValue').textContent = randomSeed;
+                
+                this.generate();
+            }
+
+            updatePresetSelection() {
+                document.querySelectorAll('.preset-button').forEach(button => {
+                    const presetKey = `${button.dataset.fg}-${button.dataset.bg}`;
+                    if (presetKey === this.currentPreset) {
+                        button.classList.add('selected');
+                    } else {
+                        button.classList.remove('selected');
                     }
                 });
             }
@@ -796,24 +910,18 @@
                 const canvasWidth = parseInt(document.getElementById('canvasWidth').value);
                 const canvasHeight = parseInt(document.getElementById('canvasHeight').value);
 
-                // Add updating class for transition
                 this.canvas.classList.add('updating');
 
-                // Small delay for visual feedback
                 setTimeout(() => {
-                    // Set canvas to actual dimensions
                     this.canvas.width = canvasWidth;
                     this.canvas.height = canvasHeight;
 
-                    // Fill background
                     this.ctx.fillStyle = backgroundColor;
                     this.ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
-                    // Calculate grid spacing
                     const spacing = dotSize * 2;
                     const radius = dotSize / 2;
 
-                    // Calculate grid dimensions to center the pattern
                     const cols = Math.floor(canvasWidth / spacing);
                     const rows = Math.floor(canvasHeight / spacing);
                     const gridWidth = cols * spacing;
@@ -821,10 +929,8 @@
                     const offsetX = (canvasWidth - gridWidth) / 2 + radius;
                     const offsetY = (canvasHeight - gridHeight) / 2 + radius;
 
-                    // Initialize seeded random number generator
                     const rng = new SeededRandom(seed);
 
-                    // Draw dots
                     let dotCount = 0;
                     this.ctx.fillStyle = foregroundColor;
 
@@ -841,7 +947,6 @@
                         }
                     }
 
-                    // Scale canvas display to fit container width
                     const wrapper = this.canvas.parentElement;
                     const maxWidth = wrapper.clientWidth;
                     
@@ -855,8 +960,11 @@
                     }
 
                     document.getElementById('dotCount').textContent = dotCount.toLocaleString();
-                    this.canvas.classList.remove('updating');
-                }, 50);
+                    
+                    setTimeout(() => {
+                        this.canvas.classList.remove('updating');
+                    }, 50);
+                }, 100);
             }
 
             generateBars() {
@@ -868,33 +976,24 @@
                 const canvasWidth = parseInt(document.getElementById('canvasWidth').value);
                 const canvasHeight = parseInt(document.getElementById('canvasHeight').value);
 
-                // Add updating class for transition
                 this.canvas.classList.add('updating');
 
-                // Small delay for visual feedback
                 setTimeout(() => {
-                    // Set canvas to actual dimensions
                     this.canvas.width = canvasWidth;
                     this.canvas.height = canvasHeight;
 
-                    // Fill background
                     this.ctx.fillStyle = backgroundColor;
                     this.ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
-                    // Calculate grid spacing (gap = bar width)
                     const spacing = barWidth * 2;
                     const cornerRadius = barWidth * 0.2125556105;
 
-                    // Calculate grid dimensions to center the pattern
                     const cols = Math.floor(canvasWidth / spacing);
-                    const rows = Math.floor((canvasHeight / spacing) * 3);
                     const gridWidth = cols * spacing;
                     const offsetX = (canvasWidth - gridWidth) / 2 + barWidth / 2;
 
-                    // Initialize seeded random number generator
                     const rng = new SeededRandom(seed);
 
-                    // Draw bars
                     let barCount = 0;
                     this.ctx.fillStyle = foregroundColor;
 
@@ -904,23 +1003,19 @@
 
                         while (currentY < canvasHeight) {
                             if (rng.next() < density) {
-                                // Bars are always 2-6 units tall (never square)
                                 const lengthUnits = 2 + Math.floor(rng.next() * 5);
                                 const barHeight = barWidth * lengthUnits;
 
-                                // Draw rounded rectangle
                                 this.drawRoundedRect(x - barWidth / 2, currentY, barWidth, barHeight, cornerRadius);
                                 barCount++;
 
                                 currentY += barHeight + barWidth;
                             } else {
-                                // Skip one unit when density check fails
                                 currentY += barWidth * 2;
                             }
                         }
                     }
 
-                    // Scale canvas display to fit container width
                     const wrapper = this.canvas.parentElement;
                     const maxWidth = wrapper.clientWidth;
                     
@@ -934,8 +1029,11 @@
                     }
 
                     document.getElementById('dotCount').textContent = barCount.toLocaleString();
-                    this.canvas.classList.remove('updating');
-                }, 50);
+                    
+                    setTimeout(() => {
+                        this.canvas.classList.remove('updating');
+                    }, 50);
+                }, 100);
             }
 
             drawRoundedRect(x, y, width, height, radius) {
@@ -953,6 +1051,16 @@
                 this.ctx.fill();
             }
 
+            showSuccessToast(message) {
+                const toast = document.getElementById('successToast');
+                toast.textContent = message;
+                toast.classList.add('visible');
+                
+                setTimeout(() => {
+                    toast.classList.remove('visible');
+                }, TIMING.toastDuration);
+            }
+
             downloadPNG() {
                 const seed = document.getElementById('seed').value;
                 const link = document.createElement('a');
@@ -960,6 +1068,10 @@
                 link.download = `pattern-${timestamp}-${seed}.png`;
                 link.href = this.canvas.toDataURL('image/png');
                 link.click();
+                
+                setTimeout(() => {
+                    this.showSuccessToast('PNG exported successfully');
+                }, TIMING.toastDelay);
             }
 
             downloadSVG() {
@@ -968,6 +1080,10 @@
                 } else {
                     this.downloadBarsSVG();
                 }
+                
+                setTimeout(() => {
+                    this.showSuccessToast('SVG exported successfully');
+                }, TIMING.toastDelay);
             }
 
             downloadDotsSVG() {
@@ -982,7 +1098,6 @@
                 const spacing = dotSize * 2;
                 const radius = dotSize / 2;
 
-                // Calculate grid dimensions to center the pattern
                 const cols = Math.floor(canvasWidth / spacing);
                 const rows = Math.floor(canvasHeight / spacing);
                 const gridWidth = cols * spacing;
@@ -1049,7 +1164,6 @@
 
                     while (currentY < canvasHeight) {
                         if (rng.next() < density) {
-                            // Bars are always 2-6 units tall (never square)
                             const lengthUnits = 2 + Math.floor(rng.next() * 5);
                             const barHeight = barWidth * lengthUnits;
                             const rx = x - barWidth / 2;
@@ -1076,24 +1190,8 @@
                 link.click();
                 URL.revokeObjectURL(url);
             }
-
-            drawRoundedRect(x, y, width, height, radius) {
-                this.ctx.beginPath();
-                this.ctx.moveTo(x + radius, y);
-                this.ctx.lineTo(x + width - radius, y);
-                this.ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-                this.ctx.lineTo(x + width, y + height - radius);
-                this.ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-                this.ctx.lineTo(x + radius, y + height);
-                this.ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-                this.ctx.lineTo(x, y + radius);
-                this.ctx.quadraticCurveTo(x, y, x + radius, y);
-                this.ctx.closePath();
-                this.ctx.fill();
-            }
         }
 
-        // Initialize the pattern generator
         new PatternGenerator();
     </script>
 </body>
