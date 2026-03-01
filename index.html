@@ -781,37 +781,41 @@
                 const toggleBars = document.getElementById('toggleBars');
 
                 // #region agent log
-                // Debug instrumentation - checking computed styles
+                // Debug instrumentation - checking computed styles and container sizes
                 setTimeout(() => {
                     const toggleGroup = document.querySelector('.toggle-group');
                     const dotsBtn = document.getElementById('toggleDots');
                     const barsBtn = document.getElementById('toggleBars');
+                    const controls = document.querySelector('.controls');
                     const groupStyles = window.getComputedStyle(toggleGroup);
                     const dotsStyles = window.getComputedStyle(dotsBtn);
                     const barsStyles = window.getComputedStyle(barsBtn);
+                    const controlsStyles = window.getComputedStyle(controls);
                     const debugData = {
+                        controlsWidth: controlsStyles.width,
+                        controlsPadding: controlsStyles.padding,
+                        groupWidth: groupStyles.width,
+                        groupPadding: groupStyles.padding,
                         groupDisplay: groupStyles.display,
                         groupGridTemplateColumns: groupStyles.gridTemplateColumns,
                         groupGap: groupStyles.gap,
-                        groupColumnGap: groupStyles.columnGap,
-                        groupRowGap: groupStyles.rowGap,
                         dotsWidth: dotsStyles.width,
                         barsWidth: barsStyles.width,
-                        dotsInlineStyle: dotsBtn.style.width || 'none',
-                        barsInlineStyle: barsBtn.style.width || 'none',
-                        dotsClasses: dotsBtn.className,
-                        barsClasses: barsBtn.className
+                        dotsBoxSizing: dotsStyles.boxSizing,
+                        dotsPadding: dotsStyles.padding
                     };
                     console.log('🔍 DEBUG_TOGGLE_STYLES:', JSON.stringify(debugData, null, 2));
                     // Also show on page temporarily
                     const debugDiv = document.createElement('div');
-                    debugDiv.style.cssText = 'position:fixed;top:10px;right:10px;background:#1A1917;color:#fff;padding:12px;font-size:11px;font-family:monospace;max-width:400px;z-index:9999;border-radius:8px;';
+                    debugDiv.style.cssText = 'position:fixed;top:10px;right:10px;background:#1A1917;color:#fff;padding:12px;font-size:10px;font-family:monospace;max-width:400px;z-index:9999;border-radius:8px;line-height:1.4;';
                     debugDiv.innerHTML = '<strong>DEBUG INFO:</strong><br>' + 
+                        'Controls: ' + debugData.controlsWidth + '<br>' +
+                        'Group: ' + debugData.groupWidth + '<br>' +
                         'Display: ' + debugData.groupDisplay + '<br>' +
                         'Grid Cols: ' + debugData.groupGridTemplateColumns + '<br>' +
                         'Gap: ' + debugData.groupGap + '<br>' +
-                        'Dots Width: ' + debugData.dotsWidth + '<br>' +
-                        'Bars Width: ' + debugData.barsWidth;
+                        'Dots: ' + debugData.dotsWidth + '<br>' +
+                        'Bars: ' + debugData.barsWidth;
                     document.body.appendChild(debugDiv);
                 }, 100);
                 // #endregion
