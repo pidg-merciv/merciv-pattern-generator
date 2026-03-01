@@ -778,6 +778,19 @@
                 const toggleDots = document.getElementById('toggleDots');
                 const toggleBars = document.getElementById('toggleBars');
 
+                // #region agent log
+                // Debug instrumentation - checking computed styles
+                setTimeout(() => {
+                    const toggleGroup = document.querySelector('.toggle-group');
+                    const dotsBtn = document.getElementById('toggleDots');
+                    const barsBtn = document.getElementById('toggleBars');
+                    const groupStyles = window.getComputedStyle(toggleGroup);
+                    const dotsStyles = window.getComputedStyle(dotsBtn);
+                    const barsStyles = window.getComputedStyle(barsBtn);
+                    fetch('http://127.0.0.1:7845/ingest/2131d044-b565-41ea-b919-bd7c4947e111',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'83378b'},body:JSON.stringify({sessionId:'83378b',location:'index.html:785',message:'Toggle group computed styles',data:{groupDisplay:groupStyles.display,groupGridTemplateColumns:groupStyles.gridTemplateColumns,groupGap:groupStyles.gap,groupColumnGap:groupStyles.columnGap,dotsWidth:dotsStyles.width,barsWidth:barsStyles.width,dotsInlineStyle:dotsBtn.style.width,barsInlineStyle:barsBtn.style.width},timestamp:Date.now(),hypothesisId:'H1,H2,H4'})}).catch(()=>{});
+                }, 100);
+                // #endregion
+
                 // Pattern mode toggle
                 toggleDots.addEventListener('click', () => {
                     this.patternMode = 'dots';
