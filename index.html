@@ -478,11 +478,20 @@
                 foregroundColor.addEventListener('input', () => this.generate());
                 backgroundColor.addEventListener('input', () => this.generate());
 
-                // Shuffle button - randomizes seed
+                // Shuffle button - randomizes dot size, density, and seed
                 document.getElementById('randomize').addEventListener('click', () => {
-                    const randomSeed = Math.floor(Math.random() * 100) + 1;
+                    const randomDotSize = Math.floor(Math.random() * 29) + 2; // 2-30
+                    const randomDensity = Math.floor(Math.random() * 101); // 0-100
+                    const randomSeed = Math.floor(Math.random() * 100) + 1; // 1-100
+                    
+                    dotSize.value = randomDotSize;
+                    density.value = randomDensity;
                     seed.value = randomSeed;
+                    
+                    document.getElementById('sizeValue').textContent = randomDotSize + 'px';
+                    document.getElementById('densityValue').textContent = randomDensity + '%';
                     document.getElementById('seedValue').textContent = randomSeed;
+                    
                     this.generate();
                 });
 
@@ -491,12 +500,21 @@
 
                 // Keyboard shortcuts
                 document.addEventListener('keydown', (e) => {
-                    // Space or R for new pattern
+                    // Space or R for shuffle (randomize all parameters)
                     if ((e.code === 'Space' || e.key === 'r') && !e.target.matches('input')) {
                         e.preventDefault();
-                        const randomSeed = Math.floor(Math.random() * 100) + 1;
+                        const randomDotSize = Math.floor(Math.random() * 29) + 2; // 2-30
+                        const randomDensity = Math.floor(Math.random() * 101); // 0-100
+                        const randomSeed = Math.floor(Math.random() * 100) + 1; // 1-100
+                        
+                        dotSize.value = randomDotSize;
+                        density.value = randomDensity;
                         seed.value = randomSeed;
+                        
+                        document.getElementById('sizeValue').textContent = randomDotSize + 'px';
+                        document.getElementById('densityValue').textContent = randomDensity + '%';
                         document.getElementById('seedValue').textContent = randomSeed;
+                        
                         this.generate();
                     }
                     // P for PNG download
