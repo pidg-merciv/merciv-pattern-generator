@@ -331,6 +331,54 @@
             margin: 28px 0;
         }
 
+        .color-presets {
+            margin-top: 16px;
+        }
+
+        .preset-label {
+            font-size: 12px;
+            font-weight: 500;
+            color: #6b7280;
+            margin-bottom: 8px;
+            letter-spacing: -0.01em;
+        }
+
+        .preset-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+        }
+
+        .preset-button {
+            width: 100%;
+            height: 36px;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            padding: 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .preset-button:hover {
+            border-color: #9ca3af;
+            transform: scale(1.05);
+        }
+
+        .preset-button:active {
+            transform: scale(0.98);
+        }
+
+        .preset-colors {
+            display: flex;
+            height: 100%;
+        }
+
+        .preset-fg, .preset-bg {
+            flex: 1;
+        }
+
         @media (max-width: 1024px) {
             .container {
                 grid-template-columns: 1fr;
@@ -399,6 +447,59 @@
                     <div class="color-input-wrapper">
                         <span class="color-label">Background</span>
                         <input type="color" id="backgroundColor" value="#3E6166">
+                    </div>
+                </div>
+                <div class="color-presets">
+                    <span class="preset-label">Brand presets</span>
+                    <div class="preset-grid">
+                        <button class="preset-button" data-fg="#7C3648" data-bg="#572330" title="Orange 30 on 20">
+                            <div class="preset-colors">
+                                <div class="preset-fg" style="background: #7C3648;"></div>
+                                <div class="preset-bg" style="background: #572330;"></div>
+                            </div>
+                        </button>
+                        <button class="preset-button" data-fg="#FF5E3D" data-bg="#ED4421" title="Orange 60 on 50">
+                            <div class="preset-colors">
+                                <div class="preset-fg" style="background: #FF5E3D;"></div>
+                                <div class="preset-bg" style="background: #ED4421;"></div>
+                            </div>
+                        </button>
+                        <button class="preset-button" data-fg="#FFCABD" data-bg="#FFA894" title="Orange 90 on 80">
+                            <div class="preset-colors">
+                                <div class="preset-fg" style="background: #FFCABD;"></div>
+                                <div class="preset-bg" style="background: #FFA894;"></div>
+                            </div>
+                        </button>
+                        <button class="preset-button" data-fg="#33332F" data-bg="#1A1917" title="Neutral 20 on 10">
+                            <div class="preset-colors">
+                                <div class="preset-fg" style="background: #33332F;"></div>
+                                <div class="preset-bg" style="background: #1A1917;"></div>
+                            </div>
+                        </button>
+                        <button class="preset-button" data-fg="#1E5F6B" data-bg="#143F47" title="Blue 30 on 20">
+                            <div class="preset-colors">
+                                <div class="preset-fg" style="background: #1E5F6B;"></div>
+                                <div class="preset-bg" style="background: #143F47;"></div>
+                            </div>
+                        </button>
+                        <button class="preset-button" data-fg="#36ADC4" data-bg="#089DBA" title="Blue 60 on 50">
+                            <div class="preset-colors">
+                                <div class="preset-fg" style="background: #36ADC4;"></div>
+                                <div class="preset-bg" style="background: #089DBA;"></div>
+                            </div>
+                        </button>
+                        <button class="preset-button" data-fg="#B3E8EF" data-bg="#83D7E2" title="Blue 90 on 80">
+                            <div class="preset-colors">
+                                <div class="preset-fg" style="background: #B3E8EF;"></div>
+                                <div class="preset-bg" style="background: #83D7E2;"></div>
+                            </div>
+                        </button>
+                        <button class="preset-button" data-fg="#E5E5DF" data-bg="#FAF9F5" title="Neutral 90 on 98">
+                            <div class="preset-colors">
+                                <div class="preset-fg" style="background: #E5E5DF;"></div>
+                                <div class="preset-bg" style="background: #FAF9F5;"></div>
+                            </div>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -477,6 +578,17 @@
                 canvasHeight.addEventListener('input', () => this.generate());
                 foregroundColor.addEventListener('input', () => this.generate());
                 backgroundColor.addEventListener('input', () => this.generate());
+
+                // Color preset buttons
+                document.querySelectorAll('.preset-button').forEach(button => {
+                    button.addEventListener('click', () => {
+                        const fg = button.dataset.fg;
+                        const bg = button.dataset.bg;
+                        foregroundColor.value = fg;
+                        backgroundColor.value = bg;
+                        this.generate();
+                    });
+                });
 
                 // Shuffle button - randomizes dot size, density, and seed
                 document.getElementById('randomize').addEventListener('click', () => {
