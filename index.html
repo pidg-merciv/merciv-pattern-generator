@@ -72,12 +72,19 @@
 
         input[type="range"] {
             width: 100%;
-            height: 4px;
-            border-radius: 2px;
-            background: linear-gradient(to right, #639097 0%, #639097 var(--value-percent), #e5e7eb var(--value-percent), #e5e7eb 100%);
+            height: 6px;
+            border-radius: 3px;
+            background: #e5e7eb;
             outline: none;
             -webkit-appearance: none;
             transition: background 0.15s ease;
+        }
+
+        input[type="range"]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #e5e7eb;
         }
 
         input[type="range"]::-webkit-slider-thumb {
@@ -112,6 +119,32 @@
         input[type="range"]::-moz-range-thumb:hover {
             transform: scale(1.1);
             box-shadow: 0 4px 8px rgba(99,144,151,0.3), 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        input[type="range"]::-moz-range-track {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #e5e7eb;
+        }
+
+        .dimension-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .dimension-input-wrapper {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dimension-label {
+            font-size: 12px;
+            font-weight: 500;
+            color: #6b7280;
+            margin-bottom: 6px;
+            letter-spacing: -0.01em;
         }
 
         input[type="number"] {
@@ -239,6 +272,10 @@
             border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         canvas {
@@ -328,11 +365,17 @@
             </div>
 
             <div class="control-group">
-                <label>
-                    Canvas size
-                    <span class="value-display" id="canvasSizeValue">800px</span>
-                </label>
-                <input type="range" id="canvasSize" min="200" max="2400" value="800" step="100">
+                <label>Dimensions</label>
+                <div class="dimension-inputs">
+                    <div class="dimension-input-wrapper">
+                        <span class="dimension-label">Width</span>
+                        <input type="number" id="canvasWidth" value="800" min="100" max="4000" step="100">
+                    </div>
+                    <div class="dimension-input-wrapper">
+                        <span class="dimension-label">Height</span>
+                        <input type="number" id="canvasHeight" value="800" min="100" max="4000" step="100">
+                    </div>
+                </div>
             </div>
 
             <div class="divider"></div>
@@ -354,8 +397,7 @@
             <div class="divider"></div>
 
             <div class="button-group">
-                <button class="btn-primary" id="randomize">✨ New Pattern</button>
-                <button class="btn-secondary" id="copySettings">Copy Settings</button>
+                <button class="btn-primary" id="randomize">🔀 Shuffle</button>
             </div>
 
             <div class="export-section">
@@ -401,7 +443,8 @@
             initializeControls() {
                 const dotSize = document.getElementById('dotSize');
                 const density = document.getElementById('density');
-                const canvasSize = document.getElementById('canvasSize');
+                const canvasWidth = document.getElementById('canvasWidth');
+                const canvasHeight = document.getElementById('canvasHeight');
                 const foregroundColor = document.getElementById('foregroundColor');
                 const backgroundColor = document.getElementById('backgroundColor');
 
@@ -416,39 +459,15 @@
                     this.generate();
                 });
 
-                canvasSize.addEventListener('input', (e) => {
-                    document.getElementById('canvasSizeValue').textContent = e.target.value + 'px';
-                    this.generate();
-                });
-
+                canvasWidth.addEventListener('input', () => this.generate());
+                canvasHeight.addEventListener('input', () => this.generate());
                 foregroundColor.addEventListener('input', () => this.generate());
                 backgroundColor.addEventListener('input', () => this.generate());
 
-                // New Pattern button - randomizes seed
+                // Shuffle button - randomizes seed
                 document.getElementById('randomize').addEventListener('click', () => {
                     this.currentSeed = Math.floor(Math.random() * 1000000);
                     this.generate();
-                });
-
-                // Copy Settings button - copies current config to clipboard
-                document.getElementById('copySettings').addEventListener('click', () => {
-                    const settings = {
-                        dotSize: dotSize.value,
-                        density: density.value,
-                        canvasSize: canvasSize.value,
-                        foregroundColor: foregroundColor.value,
-                        backgroundColor: backgroundColor.value,
-                        seed: this.currentSeed
-                    };
-                    navigator.clipboard.writeText(JSON.stringify(settings, null, 2));
-                    
-                    // Visual feedback
-                    const btn = document.getElementById('copySettings');
-                    const originalText = btn.textContent;
-                    btn.textContent = '✓ Copied!';
-                    setTimeout(() => {
-                        btn.textContent = originalText;
-                    }, 1500);
                 });
 
                 document.getElementById('downloadPNG').addEventListener('click', () => this.downloadPNG());
@@ -480,20 +499,21 @@
                 const density = parseInt(document.getElementById('density').value) / 100;
                 const foregroundColor = document.getElementById('foregroundColor').value;
                 const backgroundColor = document.getElementById('backgroundColor').value;
-                const canvasSize = parseInt(document.getElementById('canvasSize').value);
+                const canvasWidth = parseInt(document.getElementById('canvasWidth').value);
+                const canvasHeight = parseInt(document.getElementById('canvasHeight').value);
 
                 // Add updating class for transition
                 this.canvas.classList.add('updating');
 
                 // Small delay for visual feedback
                 setTimeout(() => {
-                    // Set canvas size
-                    this.canvas.width = canvasSize;
-                    this.canvas.height = canvasSize;
+                    // Set canvas to actual dimensions
+                    this.canvas.width = canvasWidth;
+                    this.canvas.height = canvasHeight;
 
                     // Fill background
                     this.ctx.fillStyle = backgroundColor;
-                    this.ctx.fillRect(0, 0, canvasSize, canvasSize);
+                    this.ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
                     // Calculate grid spacing
                     const spacing = dotSize * 2;
@@ -506,8 +526,8 @@
                     let dotCount = 0;
                     this.ctx.fillStyle = foregroundColor;
 
-                    for (let y = radius; y < canvasSize; y += spacing) {
-                        for (let x = radius; x < canvasSize; x += spacing) {
+                    for (let y = radius; y < canvasHeight; y += spacing) {
+                        for (let x = radius; x < canvasWidth; x += spacing) {
                             if (rng.next() < density) {
                                 this.ctx.beginPath();
                                 this.ctx.arc(x, y, radius, 0, Math.PI * 2);
@@ -515,6 +535,19 @@
                                 dotCount++;
                             }
                         }
+                    }
+
+                    // Scale canvas display to fit container width
+                    const wrapper = this.canvas.parentElement;
+                    const maxWidth = wrapper.clientWidth;
+                    
+                    if (canvasWidth > maxWidth) {
+                        const scale = maxWidth / canvasWidth;
+                        this.canvas.style.width = maxWidth + 'px';
+                        this.canvas.style.height = (canvasHeight * scale) + 'px';
+                    } else {
+                        this.canvas.style.width = canvasWidth + 'px';
+                        this.canvas.style.height = canvasHeight + 'px';
                     }
 
                     document.getElementById('dotCount').textContent = dotCount.toLocaleString();
@@ -535,19 +568,20 @@
                 const density = parseInt(document.getElementById('density').value) / 100;
                 const foregroundColor = document.getElementById('foregroundColor').value;
                 const backgroundColor = document.getElementById('backgroundColor').value;
-                const canvasSize = parseInt(document.getElementById('canvasSize').value);
+                const canvasWidth = parseInt(document.getElementById('canvasWidth').value);
+                const canvasHeight = parseInt(document.getElementById('canvasHeight').value);
 
                 const spacing = dotSize * 2;
                 const radius = dotSize / 2;
                 const rng = new SeededRandom(this.currentSeed);
 
                 let svg = `<?xml version="1.0" encoding="UTF-8"?>
-<svg width="${canvasSize}" height="${canvasSize}" xmlns="http://www.w3.org/2000/svg">
-    <rect width="${canvasSize}" height="${canvasSize}" fill="${backgroundColor}"/>
+<svg width="${canvasWidth}" height="${canvasHeight}" xmlns="http://www.w3.org/2000/svg">
+    <rect width="${canvasWidth}" height="${canvasHeight}" fill="${backgroundColor}"/>
     <g fill="${foregroundColor}">`;
 
-                for (let y = radius; y < canvasSize; y += spacing) {
-                    for (let x = radius; x < canvasSize; x += spacing) {
+                for (let y = radius; y < canvasHeight; y += spacing) {
+                    for (let x = radius; x < canvasWidth; x += spacing) {
                         if (rng.next() < density) {
                             svg += `\n        <circle cx="${x}" cy="${y}" r="${radius}"/>`;
                         }
