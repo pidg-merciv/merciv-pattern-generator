@@ -594,6 +594,14 @@
                 <input type="range" id="density" min="0" max="100" value="45" step="1">
             </div>
 
+            <div class="control-group" id="maxBarHeightControl" style="display: none;">
+                <label>
+                    <span>Max bar height</span>
+                    <span class="value-display" id="maxBarHeightValue">6 units</span>
+                </label>
+                <input type="range" id="maxBarHeight" min="2" max="12" value="6" step="1">
+            </div>
+
             <div class="control-group">
                 <label>
                     <span>Seed</span>
@@ -772,6 +780,7 @@
                     this.patternMode = 'dots';
                     toggleDots.classList.add('active');
                     toggleBars.classList.remove('active');
+                    document.getElementById('maxBarHeightControl').style.display = 'none';
                     this.updateLabels();
                     this.generate();
                 });
@@ -780,6 +789,7 @@
                     this.patternMode = 'bars';
                     toggleBars.classList.add('active');
                     toggleDots.classList.remove('active');
+                    document.getElementById('maxBarHeightControl').style.display = 'block';
                     this.updateLabels();
                     this.generate();
                 });
@@ -797,6 +807,14 @@
 
                 seed.addEventListener('input', (e) => {
                     document.getElementById('seedValue').textContent = e.target.value;
+                    this.generate();
+                });
+
+                // Max bar height control
+                const maxBarHeight = document.getElementById('maxBarHeight');
+                maxBarHeight.addEventListener('input', (e) => {
+                    const units = e.target.value;
+                    document.getElementById('maxBarHeightValue').textContent = units + (units === '1' ? ' unit' : ' units');
                     this.generate();
                 });
 
@@ -975,6 +993,7 @@
                 const barWidth = parseInt(document.getElementById('dotSize').value);
                 const density = parseInt(document.getElementById('density').value) / 100;
                 const seed = parseInt(document.getElementById('seed').value);
+                const maxBarHeight = parseInt(document.getElementById('maxBarHeight').value);
                 const foregroundColor = document.getElementById('foregroundColor').value;
                 const backgroundColor = document.getElementById('backgroundColor').value;
                 const canvasWidth = parseInt(document.getElementById('canvasWidth').value);
@@ -1010,7 +1029,8 @@
 
                         while (currentY < canvasHeight) {
                             if (rng.next() < density) {
-                                const lengthUnits = 2 + Math.floor(rng.next() * 5);
+                                // Bar height range: 2 to maxBarHeight units
+                                const lengthUnits = 2 + Math.floor(rng.next() * (maxBarHeight - 1));
                                 const barHeight = barWidth * lengthUnits;
 
                                 this.drawRoundedRect(x - barWidth / 2, currentY, barWidth, barHeight, cornerRadius);
@@ -1149,6 +1169,7 @@
                 const barWidth = parseInt(document.getElementById('dotSize').value);
                 const density = parseInt(document.getElementById('density').value) / 100;
                 const seed = parseInt(document.getElementById('seed').value);
+                const maxBarHeight = parseInt(document.getElementById('maxBarHeight').value);
                 const foregroundColor = document.getElementById('foregroundColor').value;
                 const backgroundColor = document.getElementById('backgroundColor').value;
                 const canvasWidth = parseInt(document.getElementById('canvasWidth').value);
@@ -1177,7 +1198,8 @@
 
                     while (currentY < canvasHeight) {
                         if (rng.next() < density) {
-                            const lengthUnits = 2 + Math.floor(rng.next() * 5);
+                            // Bar height range: 2 to maxBarHeight units
+                            const lengthUnits = 2 + Math.floor(rng.next() * (maxBarHeight - 1));
                             const barHeight = barWidth * lengthUnits;
                             const rx = x - barWidth / 2;
                             const ry = currentY;
