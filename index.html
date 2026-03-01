@@ -698,6 +698,14 @@
                     const spacing = dotSize * 2;
                     const radius = dotSize / 2;
 
+                    // Calculate grid dimensions to center the pattern
+                    const cols = Math.floor(canvasWidth / spacing);
+                    const rows = Math.floor(canvasHeight / spacing);
+                    const gridWidth = cols * spacing;
+                    const gridHeight = rows * spacing;
+                    const offsetX = (canvasWidth - gridWidth) / 2 + radius;
+                    const offsetY = (canvasHeight - gridHeight) / 2 + radius;
+
                     // Initialize seeded random number generator
                     const rng = new SeededRandom(seed);
 
@@ -705,9 +713,11 @@
                     let dotCount = 0;
                     this.ctx.fillStyle = foregroundColor;
 
-                    for (let y = radius; y < canvasHeight; y += spacing) {
-                        for (let x = radius; x < canvasWidth; x += spacing) {
+                    for (let row = 0; row < rows; row++) {
+                        for (let col = 0; col < cols; col++) {
                             if (rng.next() < density) {
+                                const x = offsetX + col * spacing;
+                                const y = offsetY + row * spacing;
                                 this.ctx.beginPath();
                                 this.ctx.arc(x, y, radius, 0, Math.PI * 2);
                                 this.ctx.fill();
@@ -754,6 +764,15 @@
 
                 const spacing = dotSize * 2;
                 const radius = dotSize / 2;
+
+                // Calculate grid dimensions to center the pattern
+                const cols = Math.floor(canvasWidth / spacing);
+                const rows = Math.floor(canvasHeight / spacing);
+                const gridWidth = cols * spacing;
+                const gridHeight = rows * spacing;
+                const offsetX = (canvasWidth - gridWidth) / 2 + radius;
+                const offsetY = (canvasHeight - gridHeight) / 2 + radius;
+
                 const rng = new SeededRandom(seed);
 
                 let svg = `<?xml version="1.0" encoding="UTF-8"?>
@@ -761,9 +780,11 @@
     <rect width="${canvasWidth}" height="${canvasHeight}" fill="${backgroundColor}"/>
     <g fill="${foregroundColor}">`;
 
-                for (let y = radius; y < canvasHeight; y += spacing) {
-                    for (let x = radius; x < canvasWidth; x += spacing) {
+                for (let row = 0; row < rows; row++) {
+                    for (let col = 0; col < cols; col++) {
                         if (rng.next() < density) {
+                            const x = offsetX + col * spacing;
+                            const y = offsetY + row * spacing;
                             svg += `\n        <circle cx="${x}" cy="${y}" r="${radius}"/>`;
                         }
                     }
