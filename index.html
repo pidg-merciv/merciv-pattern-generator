@@ -613,6 +613,14 @@
             </div>
 
             <div class="control-group">
+                <label>
+                    <span>White highlights</span>
+                    <span class="value-display" id="highlightValue">0%</span>
+                </label>
+                <input type="range" id="highlight" min="0" max="100" value="0" step="1">
+            </div>
+
+            <div class="control-group">
                 <label>Dimensions</label>
                 <div class="dimension-inputs">
                     <div class="dimension-input-wrapper">
@@ -812,6 +820,12 @@
                     this.generate();
                 });
 
+                const highlight = document.getElementById('highlight');
+                highlight.addEventListener('input', (e) => {
+                    document.getElementById('highlightValue').textContent = e.target.value + '%';
+                    this.generate();
+                });
+
                 // Max bar height control
                 const maxBarHeight = document.getElementById('maxBarHeight');
                 maxBarHeight.addEventListener('input', (e) => {
@@ -875,18 +889,22 @@
                 const dotSize = document.getElementById('dotSize');
                 const density = document.getElementById('density');
                 const seed = document.getElementById('seed');
+                const highlight = document.getElementById('highlight');
 
                 const randomDotSize = Math.floor(Math.random() * 29) + 2;
                 const randomDensity = Math.floor(Math.random() * 101);
                 const randomSeed = Math.floor(Math.random() * 100) + 1;
+                const randomHighlight = Math.floor(Math.random() * 101);
                 
                 dotSize.value = randomDotSize;
                 density.value = randomDensity;
                 seed.value = randomSeed;
+                highlight.value = randomHighlight;
                 
                 document.getElementById('sizeValue').textContent = randomDotSize + 'px';
                 document.getElementById('densityValue').textContent = randomDensity + '%';
                 document.getElementById('seedValue').textContent = randomSeed;
+                document.getElementById('highlightValue').textContent = randomHighlight + '%';
                 
                 this.generate();
             }
@@ -955,14 +973,17 @@
 
                     const rng = new SeededRandom(seed);
 
+                    const highlightPct = parseInt(document.getElementById('highlight').value) / 100;
+                    const highlightColor = '#FAF9F5';
+
                     let dotCount = 0;
-                    this.ctx.fillStyle = foregroundColor;
 
                     for (let row = 0; row < rows; row++) {
                         for (let col = 0; col < cols; col++) {
                             if (rng.next() < density) {
                                 const x = offsetX + col * spacing;
                                 const y = offsetY + row * spacing;
+                                this.ctx.fillStyle = (highlightPct > 0 && rng.next() < highlightPct) ? highlightColor : foregroundColor;
                                 this.ctx.beginPath();
                                 this.ctx.arc(x, y, radius, 0, Math.PI * 2);
                                 this.ctx.fill();
@@ -1022,8 +1043,10 @@
 
                     const rng = new SeededRandom(seed);
 
+                    const highlightPct = parseInt(document.getElementById('highlight').value) / 100;
+                    const highlightColor = '#FAF9F5';
+
                     let barCount = 0;
-                    this.ctx.fillStyle = foregroundColor;
 
                     for (let col = 0; col < cols; col++) {
                         const x = offsetX + col * spacing;
@@ -1035,6 +1058,7 @@
                                 const lengthUnits = 2 + Math.floor(rng.next() * (maxBarHeight - 1));
                                 const barHeight = barWidth * lengthUnits;
 
+                                this.ctx.fillStyle = (highlightPct > 0 && rng.next() < highlightPct) ? highlightColor : foregroundColor;
                                 this.drawRoundedRect(x - barWidth / 2, currentY, barWidth, barHeight, cornerRadius);
                                 barCount++;
 
@@ -1138,18 +1162,21 @@
                 const offsetY = (canvasHeight - gridHeight) / 2 + spacing / 2;
 
                 const rng = new SeededRandom(seed);
+                const highlightPct = parseInt(document.getElementById('highlight').value) / 100;
+                const highlightColor = '#FAF9F5';
 
                 let svg = `<?xml version="1.0" encoding="UTF-8"?>
 <svg width="${canvasWidth}" height="${canvasHeight}" xmlns="http://www.w3.org/2000/svg">
     <rect width="${canvasWidth}" height="${canvasHeight}" fill="${backgroundColor}"/>
-    <g fill="${foregroundColor}">`;
+    <g>`;
 
                 for (let row = 0; row < rows; row++) {
                     for (let col = 0; col < cols; col++) {
                         if (rng.next() < density) {
                             const x = offsetX + col * spacing;
                             const y = offsetY + row * spacing;
-                            svg += `\n        <circle cx="${x}" cy="${y}" r="${radius}"/>`;
+                            const fill = (highlightPct > 0 && rng.next() < highlightPct) ? highlightColor : foregroundColor;
+                            svg += `\n        <circle cx="${x}" cy="${y}" r="${radius}" fill="${fill}"/>`;
                         }
                     }
                 }
@@ -1188,11 +1215,13 @@
                 const offsetX = (canvasWidth - gridWidth) / 2 + spacing / 2;
 
                 const rng = new SeededRandom(seed);
+                const highlightPct = parseInt(document.getElementById('highlight').value) / 100;
+                const highlightColor = '#FAF9F5';
 
                 let svg = `<?xml version="1.0" encoding="UTF-8"?>
 <svg width="${canvasWidth}" height="${canvasHeight}" xmlns="http://www.w3.org/2000/svg">
     <rect width="${canvasWidth}" height="${canvasHeight}" fill="${backgroundColor}"/>
-    <g fill="${foregroundColor}">`;
+    <g>`;
 
                 for (let col = 0; col < cols; col++) {
                     const x = offsetX + col * spacing;
@@ -1205,8 +1234,9 @@
                             const barHeight = barWidth * lengthUnits;
                             const rx = x - barWidth / 2;
                             const ry = currentY;
+                            const fill = (highlightPct > 0 && rng.next() < highlightPct) ? highlightColor : foregroundColor;
 
-                            svg += `\n        <rect x="${rx}" y="${ry}" width="${barWidth}" height="${barHeight}" rx="${cornerRadius}" ry="${cornerRadius}"/>`;
+                            svg += `\n        <rect x="${rx}" y="${ry}" width="${barWidth}" height="${barHeight}" rx="${cornerRadius}" ry="${cornerRadius}" fill="${fill}"/>`;
 
                             currentY += barHeight + barWidth;
                         } else {
